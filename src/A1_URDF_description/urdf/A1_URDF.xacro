@@ -1,0 +1,228 @@
+<?xml version="1.0" ?>
+<robot name="A1_URDF" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find A1_URDF_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find A1_URDF_description)/urdf/A1_URDF.trans" />
+<xacro:include filename="$(find A1_URDF_description)/urdf/A1_URDF.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="0.039834684953549145 0.003962116484594227 0.2660820161265034" rpy="0 0 0"/>
+    <mass value="11.060113980080205"/>
+    <inertia ixx="0.815476" iyy="0.829552" izz="0.044619" ixy="-0.000894" iyz="-0.018701" ixz="-0.057886"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="shoulder_pitch_link_1">
+  <inertial>
+    <origin xyz="0.0035207845117568026 0.03846821635478598 -1.8268588319880763e-07" rpy="0 0 0"/>
+    <mass value="0.5251304964046274"/>
+    <inertia ixx="0.000595" iyy="0.000341" izz="0.000455" ixy="-1.9e-05" iyz="4e-06" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.060809 -0.0785 -0.693" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/shoulder_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.060809 -0.0785 -0.693" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/shoulder_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="shoulder_roll_link_1">
+  <inertial>
+    <origin xyz="0.003862073029036038 3.647082635893639e-14 -0.035748704841097045" rpy="0 0 0"/>
+    <mass value="0.35375303322496326"/>
+    <inertia ixx="0.000282" iyy="0.000297" izz="0.000116" ixy="0.0" iyz="-0.0" ixz="7.1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.042809 -0.1285 -0.693" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/shoulder_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.042809 -0.1285 -0.693" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/shoulder_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="shoulder_yaw_link_1">
+  <inertial>
+    <origin xyz="-0.0009418759824192033 -0.00048694679993840917 -0.070755798963691" rpy="0 0 0"/>
+    <mass value="0.9948016133541021"/>
+    <inertia ixx="0.002136" iyy="0.002058" izz="0.000591" ixy="0.0" iyz="-2.1e-05" ixz="-2e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.060809 -0.1285 -0.628" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/shoulder_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.060809 -0.1285 -0.628" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/shoulder_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="elbow_link_1">
+  <inertial>
+    <origin xyz="-8.236441758763258e-06 0.01866319328349092 -0.05735900040091363" rpy="0 0 0"/>
+    <mass value="0.39788529345683826"/>
+    <inertia ixx="0.000408" iyy="0.00037" izz="0.000178" ixy="0.0" iyz="9.6e-05" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.060809 -0.102 -0.513" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/elbow_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.060809 -0.102 -0.513" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/elbow_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="wrist_yaw_link_1">
+  <inertial>
+    <origin xyz="-0.0006728886157311778 6.621953283642013e-05 -0.02995414411403996" rpy="0 0 0"/>
+    <mass value="0.3047005758856087"/>
+    <inertia ixx="0.000186" iyy="0.000242" izz="0.000145" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.060809 -0.1285 -0.414" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/wrist_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.060809 -0.1285 -0.414" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/wrist_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="wrist_pitch_link_1">
+  <inertial>
+    <origin xyz="-0.024345070381017644 0.00689390806413534 8.331884319406901e-05" rpy="0 0 0"/>
+    <mass value="0.2450716256252427"/>
+    <inertia ixx="0.000119" iyy="9.5e-05" izz="0.000128" ixy="5e-06" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.085809 -0.1285 -0.323" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/wrist_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.085809 -0.1285 -0.323" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/wrist_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="wrist_roll_link_1">
+  <inertial>
+    <origin xyz="-0.000496546010141069 -0.013724401975571926 -0.038634853098392374" rpy="0 0 0"/>
+    <mass value="0.3953103293618046"/>
+    <inertia ixx="0.000377" iyy="0.000315" izz="0.000168" ixy="-1e-06" iyz="-9.5e-05" ixz="-3e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.060809 -0.1505 -0.323" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/wrist_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.060809 -0.1505 -0.323" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://A1_URDF_description/meshes/wrist_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="shoulder_pitch_joint" type="continuous">
+  <origin xyz="0.060809 0.0785 0.693" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="shoulder_pitch_link_1"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="shoulder_roll_joint" type="continuous">
+  <origin xyz="-0.018 0.05 0.0" rpy="0 0 0"/>
+  <parent link="shoulder_pitch_link_1"/>
+  <child link="shoulder_roll_link_1"/>
+  <axis xyz="1.0 -0.0 0.0"/>
+    <limit lower="-0.3490658503988659"/>
+  </joint>
+
+<joint name="shoulder_yaw_joint" type="continuous">
+  <origin xyz="0.018 0.0 -0.065" rpy="0 0 0"/>
+  <parent link="shoulder_roll_link_1"/>
+  <child link="shoulder_yaw_link_1"/>
+  <axis xyz="-0.0 -0.0 1.0"/>
+</joint>
+
+<joint name="elbow_joint" type="continuous">
+  <origin xyz="0.0 -0.0265 -0.115" rpy="0 0 0"/>
+  <parent link="shoulder_yaw_link_1"/>
+  <child link="elbow_link_1"/>
+  <axis xyz="0.0 1.0 0.0"/>
+    <limit upper="1.0471975511965976"/ lower="-1.7453292519943295">
+  </joint>
+
+<joint name="wrist_yaw_joint" type="continuous">
+  <origin xyz="0.0 0.0265 -0.099" rpy="0 0 0"/>
+  <parent link="elbow_link_1"/>
+  <child link="wrist_yaw_link_1"/>
+  <axis xyz="-0.0 0.0 -1.0"/>
+</joint>
+
+<joint name="wrist_pitch_joint" type="continuous">
+  <origin xyz="0.025 0.0 -0.091" rpy="0 0 0"/>
+  <parent link="wrist_yaw_link_1"/>
+  <child link="wrist_pitch_link_1"/>
+  <axis xyz="1.0 -0.0 0.0"/>
+    <limit lower="-0.5235987755982988"/ upper="0.5235987755982988">
+  </joint>
+
+<joint name="wrist_roll_joint" type="continuous">
+  <origin xyz="-0.025 0.022 0.0" rpy="0 0 0"/>
+  <parent link="wrist_pitch_link_1"/>
+  <child link="wrist_roll_link_1"/>
+  <axis xyz="0.0 1.0 -0.0"/>
+    <limit lower="-1.5707963267948966"/ upper="1.5707963267948966">
+  </joint>
+
+</robot>

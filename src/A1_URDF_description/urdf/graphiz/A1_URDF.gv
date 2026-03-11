@@ -1,0 +1,26 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"shoulder_pitch_link_1" [label="shoulder_pitch_link_1"];
+"shoulder_roll_link_1" [label="shoulder_roll_link_1"];
+"shoulder_yaw_link_1" [label="shoulder_yaw_link_1"];
+"elbow_link_1" [label="elbow_link_1"];
+"wrist_yaw_link_1" [label="wrist_yaw_link_1"];
+"wrist_pitch_link_1" [label="wrist_pitch_link_1"];
+"wrist_roll_link_1" [label="wrist_roll_link_1"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "shoulder_pitch_joint" [label="xyz: 0.060809 0.0785 0.693 \nrpy: 0 -0 0"]
+"shoulder_pitch_joint" -> "shoulder_pitch_link_1"
+"shoulder_pitch_link_1" -> "shoulder_roll_joint" [label="xyz: -0.018 0.05 0 \nrpy: 0 -0 0"]
+"shoulder_roll_joint" -> "shoulder_roll_link_1"
+"shoulder_roll_link_1" -> "shoulder_yaw_joint" [label="xyz: 0.018 0 -0.065 \nrpy: 0 -0 0"]
+"shoulder_yaw_joint" -> "shoulder_yaw_link_1"
+"shoulder_yaw_link_1" -> "elbow_joint" [label="xyz: 0 -0.0265 -0.115 \nrpy: 0 -0 0"]
+"elbow_joint" -> "elbow_link_1"
+"elbow_link_1" -> "wrist_yaw_joint" [label="xyz: 0 0.0265 -0.099 \nrpy: 0 -0 0"]
+"wrist_yaw_joint" -> "wrist_yaw_link_1"
+"wrist_yaw_link_1" -> "wrist_pitch_joint" [label="xyz: 0.025 0 -0.091 \nrpy: 0 -0 0"]
+"wrist_pitch_joint" -> "wrist_pitch_link_1"
+"wrist_pitch_link_1" -> "wrist_roll_joint" [label="xyz: -0.025 0.022 0 \nrpy: 0 -0 0"]
+"wrist_roll_joint" -> "wrist_roll_link_1"
+}

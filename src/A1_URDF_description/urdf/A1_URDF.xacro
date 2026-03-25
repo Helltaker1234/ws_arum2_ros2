@@ -2,8 +2,11 @@
 <robot name="A1_URDF" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find A1_URDF_description)/urdf/materials.xacro" />
-  <xacro:include filename="$(find A1_URDF_description)/urdf/A1_URDF.trans" />
+  <!-- <xacro:include filename="$(find A1_URDF_description)/urdf/A1_URDF.trans" /> -->
   <xacro:include filename="$(find A1_URDF_description)/urdf/A1_URDF.gazebo" />
+
+  <xacro:include filename="$(find A1_URDF_description)/urdf/gazebo_frame_connection.xacro" />
+  <!-- gazebo 와 로봇 urdf 연결하기 위한 가상 조인트 -->
 
   <link name="base_link">
     <inertial>

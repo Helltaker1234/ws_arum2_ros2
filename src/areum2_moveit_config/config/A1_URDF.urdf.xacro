@@ -11,4 +11,10 @@
 
     <xacro:A1_URDF_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
 
+    <gazebo>
+        <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+            <parameters>$(find areum2_moveit_config)/config/ros2_controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+
 </robot>

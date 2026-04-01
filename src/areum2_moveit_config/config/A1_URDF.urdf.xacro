@@ -8,6 +8,10 @@
     <!-- Import control_xacro -->
     <xacro:include filename="A1_URDF.ros2_control.xacro" />
 
+    <!-- Gazebo World Connect -->
+    <xacro:include filename="$(find areum2_moveit_config)/config/A1_URDF.gazebo_frame.xacro" />
+
+
 
     <xacro:A1_URDF_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
 

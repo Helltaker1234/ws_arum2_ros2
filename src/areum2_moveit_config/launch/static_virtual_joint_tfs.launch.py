@@ -5,3 +5,6 @@ from moveit_configs_utils.launches import generate_static_virtual_joint_tfs_laun
 def generate_launch_description():
     moveit_config = MoveItConfigsBuilder("A1_URDF", package_name="areum2_moveit_config").to_moveit_configs()
     return generate_static_virtual_joint_tfs_launch(moveit_config)
+
+
+# world > base_link 고정해주는 역할.

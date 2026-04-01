@@ -7,7 +7,6 @@
             <hardware>
                 <!-- By default, set up controllers for simulation. This won't work on real hardware -->
                 <!-- <plugin>mock_components/GenericSystem</plugin> -->
-
                 <plugin>gazebo_ros2_control/GazeboSystem</plugin>
             </hardware>
             <joint name="shoulder_pitch_joint">
@@ -61,5 +60,15 @@
             </joint>
 
         </ros2_control>
+
+
+        <gazebo>
+            <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+                <parameters>$(find areum2_moveit_config)/config/ros2_controllers.yaml</parameters>
+                <robot_param>robot_description</robot_param>
+                <robot_param_node>robot_state_publisher</robot_param_node>
+            </plugin>
+        </gazebo>
+
     </xacro:macro>
 </robot>

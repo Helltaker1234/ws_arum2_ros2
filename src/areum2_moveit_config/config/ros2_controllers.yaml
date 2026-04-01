@@ -10,6 +10,8 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
+    use_sim_time: true
+
 areum2_arm_l_controller:
   ros__parameters:
     joints:

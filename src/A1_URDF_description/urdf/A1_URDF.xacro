@@ -2,8 +2,6 @@
 <robot name="A1_URDF" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find A1_URDF_description)/urdf/materials.xacro" />
-  <xacro:include filename="$(find A1_URDF_description)/urdf/A1_URDF.trans" />
-  <xacro:include filename="$(find A1_URDF_description)/urdf/A1_URDF.gazebo" />
 
   <link name="base_link">
     <inertial>
@@ -14,14 +12,14 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -35,14 +33,14 @@
     <visual>
       <origin xyz="-0.060809 -0.0785 -0.693" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/shoulder_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/shoulder_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.060809 -0.0785 -0.693" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/shoulder_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/shoulder_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -56,14 +54,14 @@
     <visual>
       <origin xyz="-0.042809 -0.1285 -0.693" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/shoulder_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/shoulder_roll_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.042809 -0.1285 -0.693" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/shoulder_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/shoulder_roll_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -77,14 +75,14 @@
     <visual>
       <origin xyz="-0.060809 -0.1285 -0.628" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/shoulder_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/shoulder_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.060809 -0.1285 -0.628" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/shoulder_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/shoulder_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -98,14 +96,14 @@
     <visual>
       <origin xyz="-0.060809 -0.102 -0.513" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/elbow_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/elbow_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.060809 -0.102 -0.513" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/elbow_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/elbow_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -119,14 +117,14 @@
     <visual>
       <origin xyz="-0.060809 -0.1285 -0.414" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/wrist_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/wrist_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.060809 -0.1285 -0.414" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/wrist_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/wrist_yaw_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -140,14 +138,14 @@
     <visual>
       <origin xyz="-0.085809 -0.1285 -0.323" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/wrist_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/wrist_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.085809 -0.1285 -0.323" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/wrist_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/wrist_pitch_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -161,14 +159,14 @@
     <visual>
       <origin xyz="-0.060809 -0.1505 -0.323" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/wrist_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/wrist_roll_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.060809 -0.1505 -0.323" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://A1_URDF_description/meshes/wrist_roll_link_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="$(find A1_URDF_description)/meshes/wrist_roll_link_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>

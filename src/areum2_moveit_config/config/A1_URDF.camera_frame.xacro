@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<robot>
+  <joint name="world_to_camera_joint" type="fixed">
+    <parent link="world" />
+    <child link="camera_link" />
+    <origin xyz="0.0 0.0 0.8" rpy="0 0 3.14159" />
+  </joint>
+
+  <link name="camera_link" />
+</robot>

@@ -1,25 +1,43 @@
+# sensors:
+#   - default_sensor
+#   - kinect_depthimage
+# default_sensor:
+#   far_clipping_plane_distance: 3.0
+#   filtered_cloud_topic: filtered_cloud
+#   image_topic: /camera/camera/depth/image_rect_raw
+#   max_update_rate: 0.1
+#   near_clipping_plane_distance: 0.1
+#   padding_offset: 0.03
+#   padding_scale: 4.0
+#   queue_size: 20
+#   sensor_plugin: occupancy_map_monitor/DepthImageOctomapUpdater
+#   shadow_threshold: 0.2
+# kinect_depthimage:
+#   far_clipping_plane_distance: 5.0
+#   filtered_cloud_topic: filtered_cloud
+#   image_topic: /camera/camera/depth/image_rect_raw
+#   max_update_rate: 0.1
+#   near_clipping_plane_distance: 0.3
+#   padding_offset: 0.03
+#   padding_scale: 4.0
+#   queue_size: 20
+#   sensor_plugin: occupancy_map_monitor/DepthImageOctomapUpdater
+#   shadow_threshold: 0.2
+
+
+# PointCloud 로 해야, update 매칭 문제가 해결됨.
 sensors:
-  - default_sensor
-  - kinect_depthimage
-default_sensor:
-  far_clipping_plane_distance: 3.0
-  filtered_cloud_topic: filtered_cloud
-  image_topic: /camera/camera/depth/image_rect_raw
-  max_update_rate: 0.1
-  near_clipping_plane_distance: 0.1
-  padding_offset: 0.03
-  padding_scale: 4.0
-  queue_size: 20
-  sensor_plugin: occupancy_map_monitor/DepthImageOctomapUpdater
-  shadow_threshold: 0.2
-kinect_depthimage:
-  far_clipping_plane_distance: 5.0
-  filtered_cloud_topic: filtered_cloud
-  image_topic: /camera/camera/depth/image_rect_raw
-  max_update_rate: 0.1
-  near_clipping_plane_distance: 0.3
-  padding_offset: 0.03
-  padding_scale: 4.0
-  queue_size: 20
-  sensor_plugin: occupancy_map_monitor/DepthImageOctomapUpdater
-  shadow_threshold: 0.2
+  - camera_pointcloud
+
+camera_pointcloud:
+  sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
+  point_cloud_topic: /camera/camera/depth/color/points
+  max_range: 2.0
+  point_subsample: 1
+  padding_offset: 0.1 #
+  padding_scale: 1.0
+  max_update_rate: 1.0
+  filtered_cloud_topic: /camera/camera/depth/color/filtered_points
+
+octomap_resolution: 0.03  # [m]
+octomap_frame: world

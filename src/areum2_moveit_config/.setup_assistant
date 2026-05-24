@@ -7,4 +7,21 @@ moveit_setup_assistant_config:
   package_settings:
     author_name: jjuna
     author_email: joon1234@seoultech.ac.kr
-    generated_timestamp: 1778155160
+    generated_timestamp: 1779601155
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity

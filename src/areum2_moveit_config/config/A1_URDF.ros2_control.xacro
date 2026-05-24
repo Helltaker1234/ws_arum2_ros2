@@ -13,6 +13,7 @@
             </hardware>
             <joint name="shoulder_pitch_joint">
                 <command_interface name="position"/>
+                <command_interface name="velocity"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['shoulder_pitch_joint']}</param>
                 </state_interface>
@@ -20,6 +21,7 @@
             </joint>
             <joint name="shoulder_roll_joint">
                 <command_interface name="position"/>
+                <command_interface name="velocity"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['shoulder_roll_joint']}</param>
                 </state_interface>
@@ -27,6 +29,7 @@
             </joint>
             <joint name="shoulder_yaw_joint">
                 <command_interface name="position"/>
+                <command_interface name="velocity"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['shoulder_yaw_joint']}</param>
                 </state_interface>
@@ -34,6 +37,7 @@
             </joint>
             <joint name="elbow_joint">
                 <command_interface name="position"/>
+                <command_interface name="velocity"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['elbow_joint']}</param>
                 </state_interface>
@@ -41,6 +45,7 @@
             </joint>
             <joint name="wrist_yaw_joint">
                 <command_interface name="position"/>
+                <command_interface name="velocity"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['wrist_yaw_joint']}</param>
                 </state_interface>
@@ -48,6 +53,7 @@
             </joint>
             <joint name="wrist_pitch_joint">
                 <command_interface name="position"/>
+                <command_interface name="velocity"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['wrist_pitch_joint']}</param>
                 </state_interface>
@@ -55,6 +61,7 @@
             </joint>
             <joint name="wrist_roll_joint">
                 <command_interface name="position"/>
+                <command_interface name="velocity"/>
                 <state_interface name="position">
                   <param name="initial_value">${initial_positions['wrist_roll_joint']}</param>
                 </state_interface>

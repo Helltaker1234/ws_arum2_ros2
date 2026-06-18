@@ -389,7 +389,7 @@
   <parent link="shoulder_yaw_link_L_1"/>
   <child link="elbow_link_L_1"/>
   <axis xyz="0.0 -1.0 0.0"/>
-  <limit upper="0.872665" lower="-2.094395" effort="100" velocity="100"/>
+  <limit upper="2.094395" lower="-0.872665" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_roll_joint_L" type="revolute">
@@ -443,7 +443,7 @@
   <parent link="shoulder_yaw_link_R_1"/>
   <child link="elbow_link_R_1"/>
   <axis xyz="0.0 -1.0 0.0"/>
-  <limit upper="0.872665" lower="-2.094395" effort="100" velocity="100"/>
+  <limit upper="2.094395" lower="-0.872665" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_roll_joint_R" type="revolute">
@@ -481,7 +481,7 @@
   <parent link="shoulder_pitch_link_R_1"/>
   <child link="shoulder_roll_link_R_1"/>
   <axis xyz="-1.0 -0.0 0.0"/>
-  <limit upper="0.261799" lower="-2.96706" effort="100" velocity="100"/>
+  <limit upper="2.96706" lower="-0.261799" effort="100" velocity="100"/>
 </joint>
 
 </robot>

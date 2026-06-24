@@ -1,0 +1,17 @@
+# Default initial positions for B6's ros2_control fake system
+
+initial_positions:
+  elbow_joint_L: 0
+  elbow_joint_R: 0
+  shoulder_pitch_joint_L: 0
+  shoulder_pitch_joint_R: 0
+  shoulder_roll_joint_L: 0
+  shoulder_roll_joint_R: 0
+  shoulder_yaw_joint_L: 0
+  shoulder_yaw_joint_R: 0
+  wrist_pitch_joint_L: 0
+  wrist_pitch_joint_R: 0
+  wrist_roll_joint_L: 0
+  wrist_roll_joint_R: 0
+  wrist_yaw_joint_L: 0
+  wrist_yaw_joint_R: 0

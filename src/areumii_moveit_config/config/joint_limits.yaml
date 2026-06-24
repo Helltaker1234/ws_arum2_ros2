@@ -10,71 +10,71 @@ default_acceleration_scaling_factor: 0.1
 joint_limits:
   elbow_joint_L:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   elbow_joint_R:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   shoulder_pitch_joint_L:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   shoulder_pitch_joint_R:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   shoulder_roll_joint_L:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   shoulder_roll_joint_R:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   shoulder_yaw_joint_L:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   shoulder_yaw_joint_R:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   wrist_pitch_joint_L:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   wrist_pitch_joint_R:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   wrist_roll_joint_L:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   wrist_roll_joint_R:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   wrist_yaw_joint_L:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   wrist_yaw_joint_R:
     has_velocity_limits: true
-    max_velocity: 100
+    max_velocity: 100.0
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0

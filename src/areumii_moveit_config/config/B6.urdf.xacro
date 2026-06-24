@@ -8,6 +8,11 @@
     <!-- Import control_xacro -->
     <xacro:include filename="B6.ros2_control.xacro" />
 
+    <!-- [Gazebo World <> Robot] Fixed Connect -->
+    <xacro:include filename="$(find areumii_moveit_config)/config/B6.gazebo_frame.xacro" />
+
+    <!-- [Camera <> Robot] Fixed Connect -->
+    <xacro:include filename="$(find areumii_moveit_config)/config/B6.camera_frame.xacro" /> 
 
     <xacro:B6_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
 

@@ -9,7 +9,10 @@
                 <!-- <plugin>mock_components/GenericSystem</plugin> -->
 
                 <!-- For Gazebo to ros2_control Bridge -->
-                <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+                <!-- <plugin>gazebo_ros2_control/GazeboSystem</plugin> -->
+
+                <!-- For Real Hardware interface -->
+                <plugin>areumii_hardware_interface/AreumiiHardwareInterface</plugin>
 
             </hardware>
             <joint name="shoulder_pitch_joint_R">

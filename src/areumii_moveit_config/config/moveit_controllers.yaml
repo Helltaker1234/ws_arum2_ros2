@@ -1,5 +1,13 @@
 # MoveIt uses this configuration for controller management
 
+trajectory_execution:
+  allowed_execution_duration_scaling: 1.5
+  allowed_goal_duration_margin: 1.0
+
+  execution_duration_monitoring: True
+  # True : moveit 이 목표 trajectory 도달여부를 확인하겠다.
+  # False : 확인하지 않겠다. (근데 이러면 Rviz 상에서는 무한대기에 빠질 수 있음)
+
 moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
 
 moveit_simple_controller_manager:

@@ -457,7 +457,7 @@
   <origin xyz="0.02 0.0 -0.065" rpy="0 0 0"/>
   <parent link="shoulder_roll_link_L_1"/>
   <child link="shoulder_yaw_link_L_1"/>
-  <axis xyz="0.0 0.0 1.0"/>
+  <axis xyz="0.0 0.0 -1.0"/>
   <limit upper="1.396263" lower="-1.396263" effort="100" velocity="100"/>
 </joint>
 
@@ -465,15 +465,16 @@
   <origin xyz="0.0 -0.0265 -0.113" rpy="0 0 0"/>
   <parent link="shoulder_yaw_link_L_1"/>
   <child link="elbow_link_L_1"/>
-  <axis xyz="0.0 1.0 -0.0"/>
-  <limit upper="0.872665" lower="-2.094395" effort="100" velocity="100"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+  <limit upper="2.094395" lower="-0.872665" effort="100" velocity="100"/>
+
 </joint>
 
 <joint name="wrist_roll_joint_L" type="revolute">
   <origin xyz="0.0 0.0265 -0.089" rpy="0 0 0"/>
   <parent link="elbow_link_L_1"/>
   <child link="wrist_roll_link_L_1"/>
-  <axis xyz="0.0 0.0 1.0"/>
+  <axis xyz="0.0 0.0 -1.0"/>
   <limit upper="1.745329" lower="-1.745329" effort="100" velocity="100"/>
 </joint>
 
@@ -481,7 +482,7 @@
   <origin xyz="0.028 0.0 -0.101" rpy="0 0 0"/>
   <parent link="wrist_roll_link_L_1"/>
   <child link="wrist_yaw_link_L_1"/>
-  <axis xyz="1.0 -0.0 0.0"/>
+  <axis xyz="-1.0 -0.0 0.0"/>
   <limit upper="0.523599" lower="-0.523599" effort="100" velocity="100"/>
 </joint>
 
@@ -489,7 +490,7 @@
   <origin xyz="-0.028 0.022 0.0" rpy="0 0 0"/>
   <parent link="wrist_yaw_link_L_1"/>
   <child link="wrist_pitch_link_L_1"/>
-  <axis xyz="0.0 1.0 -0.0"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
   <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
 </joint>
 
@@ -505,8 +506,8 @@
   <origin xyz="0.0 0.0265 -0.115" rpy="0 0 0"/>
   <parent link="shoulder_yaw_link_R_1"/>
   <child link="elbow_link_R_1"/>
-  <axis xyz="0.0 1.0 -0.0"/>
-  <limit upper="0.872665" lower="-2.094395" effort="100" velocity="100"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+  <limit upper="2.094395" lower="-0.872665" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_roll_joint_R" type="revolute">
@@ -529,7 +530,7 @@
   <origin xyz="-0.028 -0.022 0.0" rpy="0 0 0"/>
   <parent link="wrist_yaw_link_R_1"/>
   <child link="wrist_pitch_link_R_1"/>
-  <axis xyz="0.0 1.0 -0.0"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
   <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
 </joint>
 
@@ -537,8 +538,8 @@
   <origin xyz="-0.018 -0.05 0.0" rpy="0 0 0"/>
   <parent link="shoulder_pitch_link_R_1"/>
   <child link="shoulder_roll_link_R_1"/>
-  <axis xyz="1.0 -0.0 0.0"/>
-  <limit upper="0.261799" lower="-2.96706" effort="100" velocity="100"/>
+  <axis xyz="-1.0 -0.0 0.0"/>
+  <limit upper="2.96706" lower="-0.261799" effort="100" velocity="100"/>
 </joint>
 
 <joint name="shoulder_pitch_joint_R" type="revolute">

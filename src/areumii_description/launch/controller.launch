@@ -1,0 +1,9 @@
+<launch>
+
+<rosparam file="$(find areumii_description)/launch/controller.yaml" command="load"/>
+<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="areumii" args="shoulder_roll_joint_L_position_controller shouler_yaw_joint_L_position_controller elbow_joint_L_position_controller wrist_roll_joint_L_position_controller wrist_yaw_joint_L_position_controller wrist_pitch_joint_L_position_controller shoulder_yaw_joint_R_position_controller elbow_joint_R_position_controller wrist_roll_joint_R_position_controller wrist_yaw_joint_R_position_controller wrist_pitch_joint_R_position_controller shoulder_roll_joint_R_position_controller shoulder_pitch_joint_R_position_controller shoulder_pitch_joint_L_position_controller gripper_left_finger_joint_L_position_controller gripper_right_finger_joint_L_position_controller gripper_left_finger_joint_R_position_controller gripper_right_finger_joint_R_position_controller joint_state_controller "/>
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+  <remap from="/joint_states" to="/areumii/joint_states"/>
+</node>
+
+</launch>

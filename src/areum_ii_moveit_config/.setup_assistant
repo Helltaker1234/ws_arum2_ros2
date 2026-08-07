@@ -1,0 +1,27 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: areumii_description
+    relative_path: urdf/areumii.xacro
+  srdf:
+    relative_path: config/areumii.srdf
+  package_settings:
+    author_name: juna
+    author_email: joon1234@seoultech.ac.kr
+    generated_timestamp: 1786083197
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+      - velocity
+    state:
+      - position
+      - velocity

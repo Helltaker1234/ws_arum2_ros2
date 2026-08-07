@@ -1,0 +1,62 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    areumii_arm_l_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+    areumii_arm_r_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+
+    areumii_gripper_l_controller:
+      type: position_controllers/GripperActionController
+
+
+    areumii_gripper_r_controller:
+      type: position_controllers/GripperActionController
+
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+areumii_arm_l_controller:
+  ros__parameters:
+    joints:
+      - shoulder_pitch_joint_L
+      - shoulder_roll_joint_L
+      - shouler_yaw_joint_L
+      - elbow_joint_L
+      - wrist_roll_joint_L
+      - wrist_yaw_joint_L
+      - wrist_pitch_joint_L
+    command_interfaces:
+      - position
+      - velocity
+    state_interfaces:
+      - position
+      - velocity
+areumii_arm_r_controller:
+  ros__parameters:
+    joints:
+      - shoulder_pitch_joint_R
+      - shoulder_roll_joint_R
+      - shoulder_yaw_joint_R
+      - elbow_joint_R
+      - wrist_roll_joint_R
+      - wrist_yaw_joint_R
+      - wrist_pitch_joint_R
+    command_interfaces:
+      - position
+      - velocity
+    state_interfaces:
+      - position
+      - velocity
+areumii_gripper_l_controller:
+  ros__parameters:
+    joint: gripper_left_finger_joint_L
+areumii_gripper_r_controller:
+  ros__parameters:
+    joint: gripper_left_finger_joint_R

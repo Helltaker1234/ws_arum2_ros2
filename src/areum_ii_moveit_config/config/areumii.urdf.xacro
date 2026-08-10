@@ -8,6 +8,8 @@
     <!-- Import control_xacro -->
     <xacro:include filename="areumii.ros2_control.xacro" />
 
+    <!-- [base_link > camera_link TF]  -->
+    <xacro:include filename="areumii.camera_frame.xacro" /> 
 
     <xacro:areumii_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
 

@@ -2,8 +2,6 @@
 <robot name="areumii" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 <xacro:include filename="$(find areumii_description)/urdf/materials.xacro" />
-<xacro:include filename="$(find areumii_description)/urdf/areumii.trans" />
-<xacro:include filename="$(find areumii_description)/urdf/areumii.gazebo" />
 <link name="base_link">
   <inertial>
     <origin xyz="-0.04548196588833091 0.00896011912781043 0.11132862648581474" rpy="0 0 0"/>

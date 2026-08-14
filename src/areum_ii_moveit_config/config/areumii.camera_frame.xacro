@@ -9,4 +9,16 @@
   </joint>
 
   <link name="camera_link"/>
+
+  <joint name="camera_link_to_color_optical_frame" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_color_optical_frame"/>
+    <origin xyz="0 0.0148 0" rpy="-1.57079632679 0 -1.57079632679"/>
+    <!-- /camera/camera/aligned_depth_to_color/image_raw 와 /camera/camera/color/image_raw 데이터 모두 camera_color_optical_frame 에서 정의가 된다. -->
+    <!-- Left IR 에 위치한 camera_link 좌표계에서 camera_color_optical_frame 좌표계로 +y, 0.0148 만큼 차이가 나므로 origin 을 다음과 같이 수정한다. -->
+    <!-- [출처] https://github.com/realsenseai/realsense-ros -->
+  </joint>
+
+  <link name="camera_color_optical_frame"/>
+
 </robot>

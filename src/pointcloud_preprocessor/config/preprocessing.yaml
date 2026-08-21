@@ -1,0 +1,30 @@
+pointcloud_preprocessor:
+  ros__parameters:
+    input_topic: /camera/depth/points
+    output_topic: /camera/depth/points_cleaned
+    target_frame: base_link
+    transform_timeout_sec: 0.1
+
+    # base_link 기준 작업 영역 [m]
+    crop_min_x: 0.25
+    crop_max_x: 0.90
+    crop_min_y: -0.45
+    crop_max_y: 0.45
+    crop_min_z: 0.02
+    crop_max_z: 0.70
+
+    enable_voxel_grid: true
+    voxel_leaf_size: 0.005
+
+    # 장면에 맞게 조정한 뒤 활성화한다.
+    remove_table: true
+    plane_distance_threshold: 0.008
+    plane_max_angle_deg: 15.0
+    minimum_plane_inliers: 500
+    check_table_height: false
+    expected_table_height: 0.50
+    table_height_tolerance: 0.03
+
+    publish_debug_clouds: false
+    roi_topic: /camera/depth/points_roi
+    table_topic: /camera/depth/table_plane

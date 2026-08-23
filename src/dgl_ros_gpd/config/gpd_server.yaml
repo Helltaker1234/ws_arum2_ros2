@@ -1,0 +1,24 @@
+dgl_ros_gpd:
+  ros__parameters:
+    input_topic: /camera/depth/points_cleaned
+    action_name: /sample_grasp_poses
+
+    # launch의 gpd_config_path 인자로 덮어쓴다.
+    gpd_config_path: ""
+
+    # 전처리 cloud frame에서 본 카메라 원점이다. camera_frame이 비어 있으면
+    # 아래 정적 좌표를 사용하고, 값이 있으면 TF로 camera origin을 계산한다.
+    camera_frame: ""
+    camera_view_point: [0.0, 0.0, 0.0]
+    tf_timeout_sec: 0.2
+
+    max_cloud_age_sec: 2.0
+    minimum_points: 100
+    max_candidates: 20
+
+    # MTC는 작은 cost를 우선한다: cost = offset - scale * GPD score
+    cost_scale: 1.0
+    cost_offset: 0.0
+
+    publish_observation: false
+    observation_topic: /dgl_ros_gpd/observation

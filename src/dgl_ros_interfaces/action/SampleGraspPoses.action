@@ -1,0 +1,9 @@
+# A non-empty name can be used by a server to select a grasp policy.
+string action_name
+---
+# Human-readable terminal state (for example: succeeded, no_grasps, canceled).
+string grasp_state
+---
+# Every candidate has a cost at the same array index. Lower cost is better.
+geometry_msgs/PoseStamped[] grasp_candidates
+float64[] costs

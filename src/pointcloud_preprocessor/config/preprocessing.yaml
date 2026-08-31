@@ -17,7 +17,7 @@ pointcloud_preprocessor:
     voxel_leaf_size: 0.005
 
     # 장면에 맞게 조정한 뒤 활성화한다.
-    remove_table: true
+    remove_table: false
     plane_distance_threshold: 0.008
     plane_max_angle_deg: 15.0
     minimum_plane_inliers: 500

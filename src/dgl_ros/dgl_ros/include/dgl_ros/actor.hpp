@@ -52,9 +52,28 @@ private:
   {
     RCLCPP_INFO(this->get_logger(), "New goal accepted");
     // This needs to return quickly to avoid blocking the executor, so spin up a new thread.
-    auto publish_grasps_callback = [this](const GoalHandleSharedPtr& goal_handle) {
-      goal_handle->publish_feedback(action_generator_func_());
-    };
+    auto publish_grasps_callback = 
+      [this](const GoalHandleSharedPtr& goal_handle) 
+      {
+        auto feedback = action_generator_func_();
+        auto result = std::make_shared<typename ActionT::Result>();
+
+        if (feedback->grasp_candidates.empty())
+        {
+          RCLCPP_WARN(this->get_logger(), "ABORTED: no grasp candidates");
+          goal_handle->abort(result);
+          return;
+        }
+
+        if (goal_handle->is_canceling())
+        {
+          goal_handle->canceled(result);
+          return;
+        }
+
+        goal_handle->publish_feedback(feedback);
+        goal_handle->succeed(result);
+      };
     std::thread{ publish_grasps_callback, goal_handle }.detach();
   }
 

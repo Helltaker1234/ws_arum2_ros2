@@ -79,9 +79,9 @@ workspace_grasps = 0.30 0.80 -0.35 0.35 0.05 0.60  # AREUMII, workspace 보다�
 #   direction: the direction to compare against
 #   angle_thresh: angle in radians above which grasps are filtered
 # AREUMII, 접근 방향 필터: GPD가 찾은 grasp 후보들 중에서, direction 이 지정한 방향으로 그리퍼가 접근하도록 grasp 후보만 남기는 기능
-filter_approach_direction = 0 # 일단 끄기. 키려면 1. 
-direction = 0 0 -1  # AREUMII, direction 은 point cloud의 좌표계 (base_link) 기준. -z 방향 기준으로 설정
-thresh_rad = 0.3535 # AREUMII, direction 주변으로 각도(rad)만큼 grasp 후보들 선정
+filter_approach_direction = 1 # 일단 끄기. 키려면 1. 
+direction = 0 0 +1  # AREUMII, direction 은 point cloud의 좌표계 (base_link) 기준. -z 방향 기준으로 설정
+thresh_rad = 1.05 # AREUMII, direction 주변으로 각도(rad)만큼 grasp 후보들 선정
 
 
 

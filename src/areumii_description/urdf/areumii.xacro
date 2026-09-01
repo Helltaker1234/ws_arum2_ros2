@@ -570,6 +570,9 @@
   <child link="gripper_right_finger_link_L_1"/>
   <axis xyz="0.0 1.0 -0.0"/>
   <limit upper="0.0" lower="-0.03" effort="100" velocity="100"/>
+
+  <mimic joint="gripper_left_finger_joint_L" multiplier="-1.0" offset="0.0"/>
+
 </joint>
 
 <joint name="gripper_hand_joint_L" type="fixed">
@@ -592,6 +595,9 @@
   <child link="gripper_rigft_finger_link_R_1"/>
   <axis xyz="0.0 1.0 -0.0"/>
   <limit upper="0.0" lower="-0.03" effort="100" velocity="100"/>
+
+  <mimic joint="gripper_left_finger_joint_R" multiplier="-1.0" offset="0.0"/>
+
 </joint>
 
 <joint name="gripper_hand_joint_R" type="fixed">

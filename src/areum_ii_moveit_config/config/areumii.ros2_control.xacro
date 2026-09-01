@@ -129,8 +129,8 @@
                   <state_interface name="velocity"/>
               </joint>
               <joint name="gripper_right_finger_joint_L">
-                  <command_interface name="position"/>
-                  <command_interface name="velocity"/>
+                  <param name="mimic">gripper_left_finger_joint_L</param>
+                  <param name="multiplier">-1.0</param>
                   <state_interface name="position">
                     <param name="initial_value">${initial_positions['gripper_right_finger_joint_L']}</param>
                   </state_interface>

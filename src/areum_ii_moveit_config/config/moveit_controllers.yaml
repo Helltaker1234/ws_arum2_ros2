@@ -37,13 +37,11 @@ moveit_simple_controller_manager:
     type: GripperCommand
     joints:
       - gripper_left_finger_joint_L
-      - gripper_right_finger_joint_L
     action_ns: gripper_cmd
     default: true
   areumii_gripper_r_controller:
     type: GripperCommand
     joints:
       - gripper_left_finger_joint_R
-      - gripper_right_finger_joint_R
     action_ns: gripper_cmd
     default: true

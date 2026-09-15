@@ -21,6 +21,8 @@
 #include <map>
 #include <string>
 
+#define TCP_DISTANCE 0.06
+
 
 
 static const rclcpp::Logger LOGGER = rclcpp::get_logger("mtc_tutorial");
@@ -222,10 +224,10 @@ mtc::Task MTCTaskNode::createTask()
       stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
       stage->properties().set("marker_ns", "approach_object");
       stage->setIKFrame(hand_frame);
-      stage->setMinMaxDistance(0.0, 0.15);
+      stage->setMinMaxDistance(TCP_DISTANCE, 0.15);
       geometry_msgs::msg::Vector3Stamped direction;
       direction.header.frame_id = hand_frame;
-      direction.vector.z = 1.0; // 
+      direction.vector.z = -1.0; // gripper_hand_link_L_1 의 -z 방향이 EE 의 approch 방향임
       stage->setDirection(direction);
       pick->insert(std::move(stage));
     }
@@ -248,7 +250,7 @@ mtc::Task MTCTaskNode::createTask()
       // setIKFrame() expects the transform from the hand frame to the grasp frame,
       // so use the inverse of the desired object-to-hand rotation: +90 deg about Y.
       grasp_frame_transform.linear() = Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()).toRotationMatrix();
-      grasp_frame_transform.translation().z() = -0.06; // gripper_hand_link_L_1 원점에서 -Z 방향으로 6cm 떨어진 지점을 파지점으로 설정 >> 이거 어짜피 TCP Frame 정의하면 0으로 변할 듯.
+      grasp_frame_transform.translation().z() = -TCP_DISTANCE; // gripper_hand_link_L_1 원점에서 -Z 방향으로 6cm 떨어진 지점을 파지점으로 설정 >> 이거 어짜피 TCP Frame 정의하면 0으로 변할 듯.
 
       auto stage = std::make_unique<mtc::stages::ComputeIK>("compute grasp IK", std::move(generator));
       stage->setMaxIKSolutions(8);

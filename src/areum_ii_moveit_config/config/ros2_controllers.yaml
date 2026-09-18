@@ -38,6 +38,19 @@ areumii_arm_l_controller:
     state_interfaces:
       - position
       - velocity
+
+    # goal 마진을 크게 주어 MTC 에서 다음 stage 로 무리없이 넘어가게 함. 
+    constraints:
+      goal_time: 10.0
+      stopped_velocity_tolerance: 1.0
+      shoulder_pitch_joint_L: { goal: 0.2 }
+      shoulder_roll_joint_L:  { goal: 0.2 }
+      shoulder_yaw_joint_L:   { goal: 0.2 }
+      elbow_joint_L:          { goal: 0.2 }
+      wrist_roll_joint_L:     { goal: 0.2 }
+      wrist_yaw_joint_L:      { goal: 0.2 }
+      wrist_pitch_joint_L:    { goal: 0.2 }
+
 areumii_arm_r_controller:
   ros__parameters:
     joints:
@@ -54,6 +67,19 @@ areumii_arm_r_controller:
     state_interfaces:
       - position
       - velocity
+
+    # goal 마진을 크게 주어 MTC 에서 다음 stage 로 무리없이 넘어가게 함. 
+    constraints:
+      goal_time: 10.0
+      stopped_velocity_tolerance: 1.0
+      shoulder_pitch_joint_R: { goal: 0.2 }
+      shoulder_roll_joint_R:  { goal: 0.2 }
+      shoulder_yaw_joint_R:   { goal: 0.2 }
+      elbow_joint_R:          { goal: 0.2 }
+      wrist_roll_joint_R:     { goal: 0.2 }
+      wrist_yaw_joint_R:      { goal: 0.2 }
+      wrist_pitch_joint_R:    { goal: 0.2 }
+
 areumii_gripper_l_controller:
   ros__parameters:
     joint: gripper_left_finger_joint_L

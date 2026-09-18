@@ -7,8 +7,12 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(dgl_ros_interfaces REQUIRED)
 find_package(moveit_task_constructor_core REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_executable(mtc_node src/mtc_node.cpp)
 target_include_directories(mtc_node PUBLIC
@@ -17,8 +21,12 @@ target_include_directories(mtc_node PUBLIC
 target_compile_features(mtc_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 ament_target_dependencies(
   mtc_node
+  "dgl_ros_interfaces"
   "moveit_task_constructor_core"
+  "moveit_ros_planning_interface"
   "rclcpp"
+  "rclcpp_action"
+  "std_srvs"
 )
 
 install(

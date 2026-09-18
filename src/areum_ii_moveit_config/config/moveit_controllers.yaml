@@ -1,5 +1,12 @@
 # MoveIt uses this configuration for controller management
 
+# goal 마진을 크게 주어 MTC 에서 다음 stage 로 무리없이 넘어가게 함.
+trajectory_execution:
+  allowed_execution_duration_scaling: 1.5
+  allowed_goal_duration_margin: 1.0
+  execution_duration_monitoring: true
+
+
 moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
 
 moveit_simple_controller_manager:

@@ -12,9 +12,9 @@ image_geometry_filename = 0
 #   init_bite: the minimum amount of the object to be covered by the hand
 finger_width = 0.02
 hand_outer_diameter = 0.08
-hand_depth = 0.035
-hand_height = 0.025
-init_bite = 0.01
+hand_depth = 0.06
+hand_height = 0.015
+init_bite = 0.03
 
 # ==== Grasp Descriptor ==== (cm)
 #   volume_width: the width of the cube inside the robot hand
@@ -45,8 +45,8 @@ workspace = 0.05 0.90 -0.45 0.45 0.02 0.70  # AREUMII, preprocess 파일에 맞�
 
 
 
-camera_position = 0.099303, 0.032762, 0.700916
-sample_above_plane = 0  # AREUMII, Table 제거는 preprocess 에서 진행하므로 끔
+camera_position = 0.099303 0.032762 0.700916 # AREUMII, src/dgl_ros/dgl_ros_models/src/gpd.cpp 의 line 41 에다가 직접 초기화함.
+sample_above_plane = 1  # AREUMII, Table 제거는 preprocess 에서 진행하므로 끔
 
 # Grasp candidate generation
 #   num_samples: the number of samples to be drawn from the point cloud
@@ -79,9 +79,9 @@ workspace_grasps = 0.08 0.80 -0.35 0.35 0.05 0.60  # AREUMII, workspace 보다�
 #   direction: the direction to compare against
 #   angle_thresh: angle in radians above which grasps are filtered
 # AREUMII, 접근 방향 필터: GPD가 찾은 grasp 후보들 중에서, direction 이 지정한 방향으로 그리퍼가 접근하도록 grasp 후보만 남기는 기능
-filter_approach_direction = 0 # 일단 끄기. 키려면 1. 
-direction = 0 0 +1  # AREUMII, direction 은 point cloud의 좌표계 (base_link) 기준. -z 방향 기준으로 설정
-thresh_rad = 0.523599 # AREUMII, direction 주변으로 각도(rad)만큼 grasp 후보들 선정
+filter_approach_direction = 1 # 일단 끄기. 키려면 1. 
+direction = 0.70710678 0 -0.70710678  # AREUMII, direction 은 point cloud의 좌표계 (base_link) 기준. -z 방향 기준으로 설정
+thresh_rad = 0.2 # AREUMII, direction 주변으로 각도(rad)만큼 grasp 후보들 선정
 
 
 

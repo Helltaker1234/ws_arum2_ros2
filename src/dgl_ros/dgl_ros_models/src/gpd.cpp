@@ -38,6 +38,7 @@ SampleGraspPoses::Feedback::SharedPtr Gpd::actionFromObs(std::shared_ptr<GpdObse
   auto grasp_cloud = std::make_shared<PointCloudRGBA>();
   pcl::copyPointCloud(cloud, *grasp_cloud);
   Eigen::Matrix3Xd camera_view_point(3, 1);
+  camera_view_point << 0.099303, 0.032762, 0.700916; // camera_view_point 초기화가 안되어 있어서 gpd_config.yaml 의 filter_approach_direction 가 적용이 이상하게 되는거였음.
   gpd::util::Cloud gpd_cloud(grasp_cloud, 0, camera_view_point);
   gpd_grasp_detector_->preprocessPointCloud(gpd_cloud);
 

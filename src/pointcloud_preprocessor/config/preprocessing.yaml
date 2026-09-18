@@ -13,11 +13,11 @@ pointcloud_preprocessor:
     crop_min_z: 0.02
     crop_max_z: 0.70
 
-    enable_voxel_grid: true
+    enable_voxel_grid: false  # false > 원본 Pointcloud 해상도 유지
     voxel_leaf_size: 0.005
 
     # 장면에 맞게 조정한 뒤 활성화한다.
-    remove_table: true
+    remove_table: false   # 이미 GPD 에서 remove_table 을 따로 함.
     plane_distance_threshold: 0.008
     plane_max_angle_deg: 15.0
     minimum_plane_inliers: 500

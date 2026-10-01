@@ -13,6 +13,9 @@ find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(octomap REQUIRED)
 
 add_executable(mtc_node src/mtc_node.cpp)
 target_include_directories(mtc_node PUBLIC
@@ -27,7 +30,11 @@ ament_target_dependencies(
   "rclcpp"
   "rclcpp_action"
   "std_srvs"
+  "sensor_msgs"
+  "tf2_ros"
 )
+target_include_directories(mtc_node SYSTEM PRIVATE ${OCTOMAP_INCLUDE_DIRS})
+target_link_libraries(mtc_node ${OCTOMAP_LIBRARIES})
 
 install(
   TARGETS mtc_node

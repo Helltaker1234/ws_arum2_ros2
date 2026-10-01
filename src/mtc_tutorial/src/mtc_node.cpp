@@ -11,6 +11,12 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <shape_msgs/msg/solid_primitive.hpp>
 #include <std_srvs/srv/empty.hpp>
+#include <rclcpp/parameter_client.hpp>
+#include <rclcpp/wait_for_message.hpp>
+#include <sensor_msgs/point_cloud2_iterator.hpp>
+#include <tf2_ros/buffer.h>
+#include <tf2_ros/transform_listener.h>
+#include <octomap/OcTree.h>
 #if __has_include(<tf2_geometry_msgs/tf2_geometry_msgs.hpp>)
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #else
@@ -25,6 +31,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <condition_variable>
 #include <future>
 #include <map>
@@ -252,58 +259,122 @@ bool MTCTaskNode::prepareTargetObject()
   if (grasp_candidates_.empty())
     return false;
 
-  const double size_x = node_->get_parameter("target_size_x").as_double();
-  const double size_y = node_->get_parameter("target_size_y").as_double();
-  const double size_z = node_->get_parameter("target_size_z").as_double();
-  const double offset_x = node_->get_parameter("target_offset_x").as_double();
-  const double offset_y = node_->get_parameter("target_offset_y").as_double();
-  const double offset_z = node_->get_parameter("target_offset_z").as_double();
-  if (size_x <= 0.0 || size_y <= 0.0 || size_z <= 0.0)
-  {
-    RCLCPP_ERROR(LOGGER, "target_size_x, target_size_y, and target_size_z must be positive");
-    return false;
-  }
-
   const std::string& frame_id = grasp_candidates_.front().header.frame_id;
-  if (frame_id.empty() || std::any_of(grasp_candidates_.begin(), grasp_candidates_.end(),
-                                      [&frame_id](const auto& candidate) {
-                                        return candidate.header.frame_id != frame_id;
-                                      }))
+  if (frame_id.empty() || 
+    std::any_of(grasp_candidates_.begin(), grasp_candidates_.end(), [&frame_id](const auto& candidate) { return candidate.header.frame_id != frame_id;})
+  )
   {
     RCLCPP_ERROR(LOGGER, "All DGL grasp candidates must use the same non-empty frame");
     return false;
   }
 
   moveit_msgs::msg::CollisionObject object;
-  object.header.frame_id = frame_id;
   object.id = node_->get_parameter("target_object_id").as_string();
   object.operation = moveit_msgs::msg::CollisionObject::ADD;
 
-  shape_msgs::msg::SolidPrimitive primitive;
-  primitive.type = shape_msgs::msg::SolidPrimitive::BOX;
-  primitive.dimensions = { size_x, size_y, size_z };
-
-
-
-  geometry_msgs::msg::Pose pose;
-  for (const auto& candidate : grasp_candidates_)
+  try
   {
-    pose.position.x += candidate.pose.position.x;
-    pose.position.y += candidate.pose.position.y;
-    pose.position.z += candidate.pose.position.z;
-  }
-  const double candidate_count = static_cast<double>(grasp_candidates_.size());
-  pose.position.x = pose.position.x / candidate_count + offset_x;
-  pose.position.y = pose.position.y / candidate_count + offset_y;
-  pose.position.z = pose.position.z / candidate_count + offset_z;
-  pose.orientation.w = 1.0;
+    // Read the active sensors_3d.yaml values from MoveIt instead of duplicating them.
+    auto parameters = std::make_shared<rclcpp::AsyncParametersClient>(node_, "/move_group");
+    
+    if (!parameters->wait_for_service(std::chrono::seconds(5)))
+      throw std::runtime_error("MoveIt parameter service is unavailable");
+    
+    auto settings_future = parameters->get_parameters({"octomap_resolution", "octomap_frame", "camera_pointcloud.max_range", "camera_pointcloud.point_subsample", "camera_pointcloud.point_cloud_topic" });
+    
+    if (settings_future.wait_for(std::chrono::seconds(5)) != std::future_status::ready)
+      throw std::runtime_error("Timed out reading MoveIt OctoMap parameters");
+    
+    const auto settings = settings_future.get();
+    const double resolution = settings.at(0).as_double();
+    const std::string map_frame = settings.at(1).as_string();
+    const double max_range = settings.at(2).as_double();
+    const int64_t subsample = settings.at(3).as_int();
+    const std::string raw_topic = settings.at(4).as_string();
+    
+    if (!std::isfinite(resolution) || resolution <= 0.0 || map_frame.empty() || !std::isfinite(max_range) || max_range <= 0.0 || subsample <= 0)
+      throw std::runtime_error("Invalid MoveIt OctoMap parameters");
 
-  object.primitives.push_back(std::move(primitive));
-  object.primitive_poses.push_back(pose);
+    // A separate node lets wait_for_message receive data while node_ is already spinning.
+    auto cloud_node = std::make_shared<rclcpp::Node>("mtc_target_cloud_receiver");
+    tf2_ros::Buffer tf_buffer(cloud_node->get_clock());
+    tf2_ros::TransformListener tf_listener(tf_buffer);
+    sensor_msgs::msg::PointCloud2 raw_cloud, cloud;
+    
+    if (!rclcpp::wait_for_message(raw_cloud, cloud_node, raw_topic, std::chrono::seconds(5), rclcpp::SensorDataQoS()) ||
+        !rclcpp::wait_for_message(cloud, cloud_node, "/camera/depth/points_cleaned_yes_table_removed", std::chrono::seconds(5), rclcpp::SensorDataQoS()))
+      throw std::runtime_error("Timed out waiting for target point clouds");
+    
+    if (raw_cloud.header.frame_id.empty() || cloud.header.frame_id.empty())
+      throw std::runtime_error("Point cloud frame_id is empty");
+
+    tf2::Transform map_from_cloud;
+    map_from_cloud.setIdentity();
+    
+    if (cloud.header.frame_id != map_frame)
+      tf2::fromMsg(tf_buffer.lookupTransform(map_frame, cloud.header.frame_id, cloud.header.stamp, rclcpp::Duration::from_seconds(1.0)).transform, map_from_cloud);
+    
+    tf2::Transform map_from_camera;
+    map_from_camera.setIdentity();
+    
+    if (raw_cloud.header.frame_id != map_frame)
+      tf2::fromMsg(tf_buffer.lookupTransform(map_frame, raw_cloud.header.frame_id, cloud.header.stamp, rclcpp::Duration::from_seconds(1.0)).transform, map_from_camera);
+
+    // OctoMap keys give identical voxel boundaries and centers to the environment map.
+    octomap::OcTree grid(resolution);
+    octomap::KeySet keys;
+    for (uint64_t row = 0; row < cloud.height; row += static_cast<uint64_t>(subsample))
+    {
+      sensor_msgs::PointCloud2ConstIterator<float> x(cloud, "x"), y(cloud, "y"), z(cloud, "z");
+      x += row * cloud.width;
+      y += row * cloud.width;
+      z += row * cloud.width;
+      for (uint64_t col = 0; col < cloud.width; col += static_cast<uint64_t>(subsample), x += subsample, y += subsample, z += subsample)
+      {
+        if (!std::isfinite(*x) || !std::isfinite(*y) || !std::isfinite(*z))
+          continue;
+        
+        const tf2::Vector3 point = map_from_cloud * tf2::Vector3(*x, *y, *z);
+        octomap::OcTreeKey key;
+        
+        if ((point - map_from_camera.getOrigin()).length2() <= max_range * max_range && grid.coordToKeyChecked(point.x(), point.y(), point.z(), key))
+          keys.insert(key);
+      }
+    }
+    
+    if (keys.empty())
+      throw std::runtime_error("The target cloud contains no usable voxels");
+
+    object.header.frame_id = map_frame;
+    shape_msgs::msg::SolidPrimitive voxel;
+    voxel.type = shape_msgs::msg::SolidPrimitive::BOX;
+    voxel.dimensions = { resolution, resolution, resolution };
+    object.primitives.reserve(keys.size());
+    object.primitive_poses.reserve(keys.size());
+    
+    for (const auto& key : keys)
+    {
+      const auto center = grid.keyToCoord(key);
+      geometry_msgs::msg::Pose voxel_pose;
+      voxel_pose.position.x = center.x();
+      voxel_pose.position.y = center.y();
+      voxel_pose.position.z = center.z();
+      voxel_pose.orientation.w = 1.0;
+      object.primitives.push_back(voxel);
+      object.primitive_poses.push_back(voxel_pose);
+    }
+    // Standard MoveIt shape exclusion applies padding_scale/padding_offset and
+    // continues excluding these boxes during every subsequent sensor update.
+  }
+  catch (const std::exception& error)
+  {
+    RCLCPP_ERROR(LOGGER, "Failed to build target voxel CollisionObject: %s", error.what());
+    return false;
+  }
 
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
   moveit_msgs::msg::CollisionObject remove_object;
-  remove_object.header.frame_id = frame_id;
+  remove_object.header.frame_id = object.header.frame_id;
   remove_object.id = object.id;
   remove_object.operation = moveit_msgs::msg::CollisionObject::REMOVE;
 
@@ -333,8 +404,8 @@ bool MTCTaskNode::prepareTargetObject()
         std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::duration<double>(rebuild_wait)));
 
   RCLCPP_INFO(LOGGER,
-              "Registered target '%s' in frame '%s' at [%.3f, %.3f, %.3f], cleared OctoMap, and waited %.2f s",
-              object.id.c_str(), frame_id.c_str(), pose.position.x, pose.position.y, pose.position.z, rebuild_wait);
+              "Registered target '%s' with %zu voxels in frame '%s', cleared OctoMap, and waited %.2f s",
+              object.id.c_str(), object.primitives.size(), object.header.frame_id.c_str(), rebuild_wait);
   return true;
 }
 

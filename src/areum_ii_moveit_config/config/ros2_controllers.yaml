@@ -83,6 +83,9 @@ areumii_arm_r_controller:
 areumii_gripper_l_controller:
   ros__parameters:
     joint: gripper_left_finger_joint_L
+    goal_tolerance: 0.03
+
 areumii_gripper_r_controller:
   ros__parameters:
     joint: gripper_left_finger_joint_R
+    goal_tolerance: 0.03

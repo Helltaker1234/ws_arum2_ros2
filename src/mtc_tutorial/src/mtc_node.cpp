@@ -476,7 +476,7 @@ mtc::Task MTCTaskNode::createTask()
       stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
       stage->properties().set("marker_ns", "approach_object");
       stage->setIKFrame(hand_frame);
-      stage->setMinMaxDistance(TCP_DISTANCE, 0.15);
+      stage->setMinMaxDistance(0.01, 0.15);
       geometry_msgs::msg::Vector3Stamped direction;
       direction.header.frame_id = hand_frame;
       direction.vector.z = -1.0; // gripper_hand_link_L_1 의 -z 방향이 EE 의 approch 방향임
@@ -501,11 +501,21 @@ mtc::Task MTCTaskNode::createTask()
 
       // GPD 가 생성한 EE Pose 좌표계에 맞추기 위한 회전 변환.
       grasp_frame_transform.linear() =
-      (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()) *
-       Eigen::AngleAxisd(-pi / 2.0, Eigen::Vector3d::UnitX()))
+      (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()))
           .toRotationMatrix();
+      // gpd_config.yaml 
+      // direction = +1 0 0 로 할 경우 grasp frame 을 다음과 같이 정의 해야함.
 
-      grasp_frame_transform.translation().z() = -TCP_DISTANCE; // gripper_hand_link_L_1 원점에서 -Z 방향으로 6cm 떨어진 지점을 파지점으로 설정 >> 이거 어짜피 TCP Frame 정의하면 0으로 변할 듯.
+
+
+      // grasp_frame_transform.linear() =
+      // (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()) *
+      //  Eigen::AngleAxisd(-pi / 2.0, Eigen::Vector3d::UnitX()))
+      //     .toRotationMatrix();
+      // gpd_config.yaml 
+      // direction = 0.8660254038 0 -0.5 로 할 경우 grasp frame 을 다음과 같이 정의 해야함.
+
+
 
       auto stage = std::make_unique<mtc::stages::ComputeIK>("compute grasp IK", std::move(generator));
       stage->setMaxIKSolutions(8);

@@ -1,7 +1,8 @@
 pointcloud_preprocessor:
   ros__parameters:
     input_topic: /camera/depth/points
-    output_topic: /camera/depth/points_cleaned
+    output_topic: /camera/depth/points_cleaned_no_table_removed
+    table_removed_topic: /camera/depth/points_cleaned_yes_table_removed
     target_frame: base_link
     transform_timeout_sec: 0.1
 
@@ -16,8 +17,8 @@ pointcloud_preprocessor:
     enable_voxel_grid: false  # false > 원본 Pointcloud 해상도 유지
     voxel_leaf_size: 0.005
 
-    # 장면에 맞게 조정한 뒤 활성화한다.
-    remove_table: false   # 이미 GPD 에서 remove_table 을 따로 함.
+    # 테이블 제거는 table_removed_topic 출력에만 적용한다.
+    remove_table: true
     plane_distance_threshold: 0.008
     plane_max_angle_deg: 15.0
     minimum_plane_inliers: 500

@@ -39,7 +39,8 @@ public:
   : Node("pointcloud_preprocessor"), tf_buffer_(this->get_clock()), tf_listener_(tf_buffer_)
   {
     input_topic_  = declare_parameter<std::string>("input_topic", "/camera/depth/points");
-    output_topic_ = declare_parameter<std::string>("output_topic", "/camera/depth/points_cleaned");
+    output_topic_ = declare_parameter<std::string>("output_topic", "/camera/depth/points_cleaned_no_table_removed");
+    table_removed_topic_ = declare_parameter<std::string>("table_removed_topic", "/camera/depth/points_cleaned_yes_table_removed");
     target_frame_ = declare_parameter<std::string>("target_frame", "base_link");
     transform_timeout_sec_ = declare_parameter<double>("transform_timeout_sec", 0.1);
 
@@ -53,7 +54,7 @@ public:
     enable_voxel_grid_ = declare_parameter<bool>("enable_voxel_grid", true);
     voxel_leaf_size_ = declare_parameter<double>("voxel_leaf_size", 0.005);
 
-    remove_table_ = declare_parameter<bool>("remove_table", false);
+    remove_table_ = declare_parameter<bool>("remove_table", true);
     plane_distance_threshold_ = declare_parameter<double>("plane_distance_threshold", 0.008);
     plane_max_angle_deg_ = declare_parameter<double>("plane_max_angle_deg", 15.0);
     minimum_plane_inliers_ = declare_parameter<int>("minimum_plane_inliers", 500);
@@ -69,6 +70,8 @@ public:
     validate_parameters();
 
     output_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(output_topic_, rclcpp::SensorDataQoS());
+    table_removed_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(
+      table_removed_topic_, rclcpp::SensorDataQoS());
     if (publish_debug_clouds_) {
       roi_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(roi_topic_, rclcpp::SensorDataQoS());
       table_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(table_topic_, rclcpp::SensorDataQoS());
@@ -81,6 +84,9 @@ public:
     RCLCPP_INFO(
       get_logger(), "Point-cloud preprocessing: %s -> %s (frame: %s)", input_topic_.c_str(),
       output_topic_.c_str(), target_frame_.c_str());
+    RCLCPP_INFO(
+      get_logger(), "Table-removal output: %s (enabled: %s)",
+      table_removed_topic_.c_str(), remove_table_ ? "true" : "false");
   }
 
 private:
@@ -163,8 +169,9 @@ private:
       filtered = downsampled;
     }
 
+    publish_cloud(filtered, transformed_msg.header, output_pub_);
     Cloud::Ptr result = remove_table_plane(filtered, transformed_msg.header);
-    publish_cloud(result, transformed_msg.header, output_pub_);
+    publish_cloud(result, transformed_msg.header, table_removed_pub_);
   }
 
   Cloud::Ptr remove_table_plane(
@@ -243,6 +250,7 @@ private:
 
   std::string input_topic_;
   std::string output_topic_;
+  std::string table_removed_topic_;
   std::string target_frame_;
   std::string roi_topic_;
   std::string table_topic_;
@@ -268,6 +276,7 @@ private:
   tf2_ros::TransformListener tf_listener_;
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr input_sub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr output_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr table_removed_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr roi_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr table_pub_;
 };

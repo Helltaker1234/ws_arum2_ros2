@@ -4,7 +4,7 @@
   <joint name="base_link_to_camera_link" type="fixed">
     <parent link="base_link" />
     <child link="camera_link" />
-    <origin xyz="0.099303 0.017962 0.700916" rpy="0 1.04719755 0" />
+    <origin xyz="0.098803 0.017962 0.846782" rpy="0 1.04719755 0" />
     <!-- pitch = 60deg 아래로 수그리게 함. -->
   </joint>
 

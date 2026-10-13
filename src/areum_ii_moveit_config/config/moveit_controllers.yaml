@@ -3,7 +3,7 @@
 # goal 마진을 크게 주어 MTC 에서 다음 stage 로 무리없이 넘어가게 함.
 trajectory_execution:
   allowed_execution_duration_scaling: 1.5
-  allowed_goal_duration_margin: 1.0
+  allowed_goal_duration_margin: 3.0
   execution_duration_monitoring: true
 
 
@@ -46,9 +46,11 @@ moveit_simple_controller_manager:
       - gripper_left_finger_joint_L
     action_ns: gripper_cmd
     default: true
+    allow_failure: true
   areumii_gripper_r_controller:
     type: GripperCommand
     joints:
       - gripper_left_finger_joint_R
     action_ns: gripper_cmd
     default: true
+    allow_failure: true

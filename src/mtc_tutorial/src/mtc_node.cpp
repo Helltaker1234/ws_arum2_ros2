@@ -39,7 +39,15 @@
 #include <string>
 #include <vector>
 
-#define TCP_DISTANCE 0.00
+
+
+#define open_gripper_L_PRISM 0.03
+#define close_gripper_L_PRISM 0.001
+
+#define open_gripper_R_PRISM 0.03
+#define close_gripper_R_PRISM 0.001
+
+#define VOXEL_SCALE_FACTOR 1.5
 
 
 
@@ -286,7 +294,7 @@ bool MTCTaskNode::prepareTargetObject()
       throw std::runtime_error("Timed out reading MoveIt OctoMap parameters");
     
     const auto settings = settings_future.get();
-    const double resolution = settings.at(0).as_double();
+    const double resolution = settings.at(0).as_double() * VOXEL_SCALE_FACTOR;
     const std::string map_frame = settings.at(1).as_string();
     const double max_range = settings.at(2).as_double();
     const int64_t subsample = settings.at(3).as_int();
@@ -466,10 +474,10 @@ mtc::Task MTCTaskNode::createTask()
   constexpr double pi = 3.14159265358979323846;
 
   const std::map<std::string, double> open_gripper = {
-    { "gripper_left_finger_joint_L", 0.03 },
+    { "gripper_left_finger_joint_L", open_gripper_L_PRISM },
   };
   const std::map<std::string, double> closed_gripper = {
-    { "gripper_left_finger_joint_L", 0.0 },
+    { "gripper_left_finger_joint_L", close_gripper_L_PRISM },
   };
   // Set task properties
   task.setProperty("group", arm_group_name);

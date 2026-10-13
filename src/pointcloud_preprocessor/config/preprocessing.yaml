@@ -8,9 +8,9 @@ pointcloud_preprocessor:
 
     # base_link 기준 작업 영역 [m]
     crop_min_x: 0.05
-    crop_max_x: 0.90
-    crop_min_y: -0.45
-    crop_max_y: 0.45
+    crop_max_x: 0.50
+    crop_min_y: -0.20
+    crop_max_y: 0.20
     crop_min_z: 0.02
     crop_max_z: 0.70
 

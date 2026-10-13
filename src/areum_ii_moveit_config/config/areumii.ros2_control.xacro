@@ -217,6 +217,16 @@
                   </state_interface>
                   <state_interface name="velocity"/>
               </joint>
+
+              <joint name="gripper_left_finger_joint_L">
+                  <command_interface name="position"/>
+                  <command_interface name="velocity"/>
+                  <state_interface name="position">
+                    <param name="initial_value">${initial_positions['gripper_left_finger_joint_L']}</param>
+                  </state_interface>
+                  <state_interface name="velocity"/>
+              </joint>
+
               <joint name="shoulder_pitch_joint_R">
                   <command_interface name="position"/>
                   <command_interface name="velocity"/>
@@ -273,28 +283,7 @@
                   </state_interface>
                   <state_interface name="velocity"/>
               </joint>
-          </ros2_control>
 
-          <ros2_control name="TEMPORARY_MOCK_gripper_system" type="system">
-              <hardware>
-                <plugin>mock_components/GenericSystem</plugin>
-              </hardware>
-              <joint name="gripper_left_finger_joint_L">
-                  <command_interface name="position"/>
-                  <command_interface name="velocity"/>
-                  <state_interface name="position">
-                    <param name="initial_value">${initial_positions['gripper_left_finger_joint_L']}</param>
-                  </state_interface>
-                  <state_interface name="velocity"/>
-              </joint>
-              <joint name="gripper_right_finger_joint_L">
-                  <command_interface name="position"/>
-                  <command_interface name="velocity"/>
-                  <state_interface name="position">
-                    <param name="initial_value">${initial_positions['gripper_right_finger_joint_L']}</param>
-                  </state_interface>
-                  <state_interface name="velocity"/>
-              </joint>
               <joint name="gripper_left_finger_joint_R">
                   <command_interface name="position"/>
                   <command_interface name="velocity"/>
@@ -303,14 +292,7 @@
                   </state_interface>
                   <state_interface name="velocity"/>
               </joint>
-              <joint name="gripper_right_finger_joint_R">
-                  <command_interface name="position"/>
-                  <command_interface name="velocity"/>
-                  <state_interface name="position">
-                    <param name="initial_value">${initial_positions['gripper_right_finger_joint_R']}</param>
-                  </state_interface>
-                  <state_interface name="velocity"/>
-              </joint>
+
           </ros2_control>
 
         </xacro:if>

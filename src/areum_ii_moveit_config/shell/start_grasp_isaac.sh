@@ -4,7 +4,8 @@ set -e
 source /opt/ros/humble/setup.bash
 export ROS_DOMAIN_ID=10
 cd /home/juna/ws_arum2_ros2/
-source install/setup.bash
+source ~/ws_arum2_ros2/install/setup.bash
+source ~/ws_moveit/install/setup.bash
 
 ROS2_BIN=/opt/ros/humble/bin/ros2
 pids=()

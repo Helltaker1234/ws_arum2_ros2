@@ -381,12 +381,8 @@ bool MTCTaskNode::prepareTargetObject()
   }
 
   moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-  moveit_msgs::msg::CollisionObject remove_object;
-  remove_object.header.frame_id = object.header.frame_id;
-  remove_object.id = object.id;
-  remove_object.operation = moveit_msgs::msg::CollisionObject::REMOVE;
 
-  if (!planning_scene_interface.applyCollisionObjects({ remove_object, object }))
+  if (!planning_scene_interface.applyCollisionObject(object))
   {
     RCLCPP_ERROR(LOGGER, "Failed to add target CollisionObject '%s'", object.id.c_str());
     return false;
@@ -579,11 +575,17 @@ mtc::Task MTCTaskNode::createTask()
       Eigen::Isometry3d grasp_frame_transform = Eigen::Isometry3d::Identity();
 
       // GPD 가 생성한 EE Pose 좌표계에 맞추기 위한 회전 변환.
+
+      // [Real]
       grasp_frame_transform.linear() =
       (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()) *
-       Eigen::AngleAxisd(pi, Eigen::Vector3d::UnitX())).toRotationMatrix();
+       Eigen::AngleAxisd(-pi / 2.0, Eigen::Vector3d::UnitX())).toRotationMatrix();
       // gpd_config.yaml 
       // direction = +1 0 0 로 할 경우 grasp frame 을 다음과 같이 정의 해야함.
+
+      // [Isaac]
+      // grasp_frame_transform.linear() =
+      //   (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY())).toRotationMatrix();
 
 
 
@@ -633,7 +635,7 @@ mtc::Task MTCTaskNode::createTask()
       stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
       stage->properties().set("marker_ns", "lift_object");
       stage->setIKFrame(hand_frame);
-      stage->setMinMaxDistance(0.0, 0.25);
+      stage->setMinMaxDistance(0.05, 0.25);
       geometry_msgs::msg::Vector3Stamped direction;
       direction.header.frame_id = world_frame;
       direction.vector.z = 1.0;
@@ -643,6 +645,45 @@ mtc::Task MTCTaskNode::createTask()
 
     task.add(std::move(pick));
   }
+
+  // {
+  //   auto stage = std::make_unique<mtc::stages::MoveTo>("open left hand after lift", interpolation_planner);
+  //   stage->setGroup(hand_group_name);
+  //   stage->setGoal(open_gripper);
+  //   task.add(std::move(stage));
+  // }
+
+  // {
+  //   const std::map<std::string, double> left_final_pose = {
+  //     { "shoulder_pitch_joint_L", -0.1 },
+  //     { "shoulder_roll_joint_L", 0.0 },
+  //     { "shouler_yaw_joint_L", 0.0 },
+  //     { "elbow_joint_L", 0.8 },
+  //     { "wrist_roll_joint_L", 0.0 },
+  //     { "wrist_yaw_joint_L", 0.0 },
+  //     { "wrist_pitch_joint_L", 0.8 },
+  //   };
+  //   auto stage = std::make_unique<mtc::stages::MoveTo>("move left arm to final pose", sampling_planner);
+  //   stage->setGroup(arm_group_name);
+  //   stage->setGoal(left_final_pose);
+  //   task.add(std::move(stage));
+  // }
+
+  // {
+  //   const std::map<std::string, double> right_final_pose = {
+  //     { "shoulder_pitch_joint_R", -0.1 },
+  //     { "shoulder_roll_joint_R", 0.0 },
+  //     { "shoulder_yaw_joint_R", 0.0 },
+  //     { "elbow_joint_R", 0.8 },
+  //     { "wrist_roll_joint_R", 0.0 },
+  //     { "wrist_yaw_joint_R", 0.0 },
+  //     { "wrist_pitch_joint_R", 0.8 },
+  //   };
+  //   auto stage = std::make_unique<mtc::stages::MoveTo>("move right arm to final pose", sampling_planner);
+  //   stage->setGroup("areumii_arm_r");
+  //   stage->setGoal(right_final_pose);
+  //   task.add(std::move(stage));
+  // }
 
   return task;
 }

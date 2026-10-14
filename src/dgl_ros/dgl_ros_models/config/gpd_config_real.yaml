@@ -14,7 +14,7 @@ finger_width = 0.02
 hand_outer_diameter = 0.08
 hand_depth = 0.0785 # 20260922 Areumii gripper_hand_link_L_1 에서 gripper tip 까지 측정한 값
 hand_height = 0.015
-init_bite = 0.01    # gripper tip 부터 안으로 3cm 들어오도록 설정.
+init_bite = 0.03    # gripper tip 부터 안으로 3cm 들어오도록 설정.
 
 # ==== Grasp Descriptor ==== (cm)
 #   volume_width: the width of the cube inside the robot hand

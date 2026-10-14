@@ -4,7 +4,7 @@
 trajectory_execution:
   allowed_execution_duration_scaling: 1.5
   allowed_goal_duration_margin: 3.0
-  execution_duration_monitoring: true
+  execution_duration_monitoring: false # 예외처리 없애기 (오른팔 다음 왼팔 Home 자세로 넘어갈때 제어성공여부 무시)
 
 
 moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager

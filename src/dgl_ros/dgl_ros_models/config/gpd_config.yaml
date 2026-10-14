@@ -44,8 +44,8 @@ remove_outliers = 0
 workspace = 0.05 0.50 -0.20 0.20 0.33 0.8  # AREUMII, preprocess 파일에 맞춤
 
 
-
-camera_position = 0.099303 0.032762 0.700916 # AREUMII, src/dgl_ros/dgl_ros_models/src/gpd.cpp 의 line 41 에다가 직접 초기화함.
+# 카메라 마운트 높이 변경사항 추가
+camera_position = 0.098803 0.017962 0.846782 # AREUMII, src/dgl_ros/dgl_ros_models/src/gpd.cpp 의 line 41 에다가 직접 초기화함.
 sample_above_plane = 1  # AREUMII, Table 제거는 preprocess 에서 진행하므로 끔
 
 # Grasp candidate generation
@@ -54,9 +54,9 @@ sample_above_plane = 1  # AREUMII, Table 제거는 preprocess 에서 진행하�
 #   nn_radius: the radius for the neighborhood search
 #   num_orientations: the number of robot hand orientations to evaluate
 #   rotation_axes: the axes about which the point neighborhood gets rotated
-num_samples = 500
+num_samples = 5000
 num_threads = 4
-nn_radius = 0.01
+nn_radius = 0.02
 num_orientations = 8
 num_finger_placements = 10
 hand_axes = 2
@@ -70,7 +70,7 @@ deepen_hand = 0
 #   workspace_grasps: dimensions of a cube centered at origin of point cloud; should be smaller than <workspace>
 min_aperture = 0.0
 max_aperture = 0.06  # AREUMII, 0.03 + 0.03 이므로. src/areumii_description/urdf/areumii.xacro 참고
-workspace_grasps = 0.08 0.48 -0.18 0.18 0.38 0.75  # AREUMII, workspace 보다는 작은 범위여야 함.
+workspace_grasps = 0.08 0.48 -0.18 0.18 0.37 0.75  # AREUMII, workspace 보다는 작은 범위여야 함.
 
 
 
@@ -79,10 +79,10 @@ workspace_grasps = 0.08 0.48 -0.18 0.18 0.38 0.75  # AREUMII, workspace 보다�
 #   direction: the direction to compare against
 #   angle_thresh: angle in radians above which grasps are filtered
 # AREUMII, 접근 방향 필터: GPD가 찾은 grasp 후보들 중에서, direction 이 지정한 방향으로 그리퍼가 접근하도록 grasp 후보만 남기는 기능
-filter_approach_direction = 0 # 일단 끄기. 키려면 1. 
+filter_approach_direction = 1 # 일단 끄기. 키려면 1. 
 
 # AREUMII, direction 은 point cloud의 좌표계 (base_link) 기준.
-direction = +1 0 0
+direction = +0.8660254038 0 -0.5
 
 # +0.70710678 0 -0.70710678  
 # +1 0 0                    

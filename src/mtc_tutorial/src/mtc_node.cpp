@@ -47,7 +47,7 @@
 #define open_gripper_R_PRISM 0.03
 #define close_gripper_R_PRISM 0.001
 
-#define VOXEL_SCALE_FACTOR 1.5
+#define VOXEL_SCALE_FACTOR 1.8
 
 
 
@@ -580,8 +580,8 @@ mtc::Task MTCTaskNode::createTask()
 
       // GPD 가 생성한 EE Pose 좌표계에 맞추기 위한 회전 변환.
       grasp_frame_transform.linear() =
-      (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()))
-          .toRotationMatrix();
+      (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()) *
+       Eigen::AngleAxisd(pi, Eigen::Vector3d::UnitX())).toRotationMatrix();
       // gpd_config.yaml 
       // direction = +1 0 0 로 할 경우 grasp frame 을 다음과 같이 정의 해야함.
 
@@ -613,18 +613,27 @@ mtc::Task MTCTaskNode::createTask()
       pick->insert(std::move(stage));
     }
 
+    // target object 와 octomap 의 충돌 무시
+    {
+      auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>(
+          "allow target octomap collision");
+      stage->allowCollisions(target_object_id, "<octomap>", true);
+      pick->insert(std::move(stage));
+    }
+
     {
       auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>("attach target");
       stage->attachObject(target_object_id, hand_frame);
       pick->insert(std::move(stage));
     }
 
+
     {
       auto stage = std::make_unique<mtc::stages::MoveRelative>("lift object", cartesian_planner);
       stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
       stage->properties().set("marker_ns", "lift_object");
       stage->setIKFrame(hand_frame);
-      stage->setMinMaxDistance(0.10, 0.25);
+      stage->setMinMaxDistance(0.0, 0.25);
       geometry_msgs::msg::Vector3Stamped direction;
       direction.header.frame_id = world_frame;
       direction.vector.z = 1.0;

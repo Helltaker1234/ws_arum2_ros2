@@ -27,7 +27,7 @@ camera_pointcloud:
   point_subsample: 1
   padding_offset: 0.005
   padding_scale: 1.0
-  max_update_rate: 0.5
+  max_update_rate: 0.25
   filtered_cloud_topic: /camera/depth/octomap_filtered_points
 
 octomap_resolution: 0.01

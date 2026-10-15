@@ -41,7 +41,9 @@ setsid "$ROS2_BIN" launch realsense2_camera rs_launch.py \
     enable_gyro:=false \
     enable_accel:=false \
     clip_distance:=1.0 \
-    spatial_filter.enable:=true &
+    spatial_filter.enable:=true \
+    temporal_filter.enable:=true \
+    hole_filling_filter.enable:=false &
 pids+=("$!")
 
 sleep 2

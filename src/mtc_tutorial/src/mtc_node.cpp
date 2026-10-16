@@ -577,15 +577,15 @@ mtc::Task MTCTaskNode::createTask()
       // GPD 가 생성한 EE Pose 좌표계에 맞추기 위한 회전 변환.
 
       // [Real]
-      grasp_frame_transform.linear() =
-      (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()) *
-       Eigen::AngleAxisd(-pi / 2.0, Eigen::Vector3d::UnitX())).toRotationMatrix();
+      // grasp_frame_transform.linear() =
+      // (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()) *
+      //  Eigen::AngleAxisd(-pi / 2.0, Eigen::Vector3d::UnitX())).toRotationMatrix();
       // gpd_config.yaml 
       // direction = +1 0 0 로 할 경우 grasp frame 을 다음과 같이 정의 해야함.
 
       // [Isaac]
-      // grasp_frame_transform.linear() =
-      //   (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY())).toRotationMatrix();
+      grasp_frame_transform.linear() =
+        (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY())).toRotationMatrix();
 
 
 

@@ -16,6 +16,8 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
+#include <pcl/segmentation/extract_clusters.h>
+#include <pcl/search/kdtree.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
@@ -41,6 +43,8 @@ public:
     input_topic_  = declare_parameter<std::string>("input_topic", "/camera/depth/points");
     output_topic_ = declare_parameter<std::string>("output_topic", "/camera/depth/points_cleaned_no_table_removed");
     table_removed_topic_ = declare_parameter<std::string>("table_removed_topic", "/camera/depth/points_cleaned_yes_table_removed");
+    octomap_topic_ = declare_parameter<std::string>(
+      "octomap_topic", "/camera/depth/points_cleaned_outlier_removed");
     target_frame_ = declare_parameter<std::string>("target_frame", "base_link");
     transform_timeout_sec_ = declare_parameter<double>("transform_timeout_sec", 0.1);
 
@@ -53,6 +57,12 @@ public:
 
     enable_voxel_grid_ = declare_parameter<bool>("enable_voxel_grid", true);
     voxel_leaf_size_ = declare_parameter<double>("voxel_leaf_size", 0.005);
+
+    enable_cluster_filter_ = declare_parameter<bool>("enable_cluster_filter", true);
+    cluster_tolerance_ = declare_parameter<double>("cluster_tolerance", 0.02);
+    cluster_min_points_ = declare_parameter<int>("cluster_min_points", 300);
+    cluster_isolation_distance_ = declare_parameter<double>("cluster_isolation_distance", 0.05);
+    cluster_max_isolated_extent_ = declare_parameter<double>("cluster_max_isolated_extent", 0.08);
 
     remove_table_ = declare_parameter<bool>("remove_table", true);
     plane_distance_threshold_ = declare_parameter<double>("plane_distance_threshold", 0.008);
@@ -72,6 +82,8 @@ public:
     output_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(output_topic_, rclcpp::SensorDataQoS());
     table_removed_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(
       table_removed_topic_, rclcpp::SensorDataQoS());
+    octomap_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(
+      octomap_topic_, rclcpp::SensorDataQoS());
     if (publish_debug_clouds_) {
       roi_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(roi_topic_, rclcpp::SensorDataQoS());
       table_pub_ = create_publisher<sensor_msgs::msg::PointCloud2>(table_topic_, rclcpp::SensorDataQoS());
@@ -92,6 +104,12 @@ public:
 private:
   void validate_parameters()
   {
+    if (!std::isfinite(cluster_tolerance_) || cluster_tolerance_ <= 0.0 ||
+        cluster_min_points_ < 1 ||
+        !std::isfinite(cluster_isolation_distance_) || cluster_isolation_distance_ <= 0.0 ||
+        !std::isfinite(cluster_max_isolated_extent_) || cluster_max_isolated_extent_ <= 0.0) {
+      throw std::invalid_argument("Invalid cluster-filter parameters");
+    }
     if (target_frame_.empty()) 
     {
       throw std::invalid_argument("target_frame must not be empty");
@@ -118,6 +136,19 @@ private:
       RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "Input cloud has no frame_id");
       return;
     }
+
+    // Preserve the camera frame/origin for OctoMap ray casting. This branch
+    // applies only invalid-point cleanup and the cluster filter, before ROI/TF.
+    Cloud::Ptr camera_cloud(new Cloud);
+    pcl::fromROSMsg(*msg, *camera_cloud);
+    Cloud::Ptr camera_valid(new Cloud);
+    std::vector<int> camera_valid_indices;
+    pcl::removeNaNFromPointCloud(*camera_cloud, *camera_valid, camera_valid_indices);
+    auto octomap_cloud = remove_small_clusters(camera_valid);
+    sensor_msgs::msg::PointCloud2 octomap_msg;
+    pcl::toROSMsg(*octomap_cloud, octomap_msg);
+    octomap_msg.header = msg->header;
+    octomap_pub_->publish(octomap_msg);
 
     sensor_msgs::msg::PointCloud2 transformed_msg;
     try {
@@ -158,11 +189,11 @@ private:
       publish_cloud(cropped, transformed_msg.header, roi_pub_);
     }
 
-    Cloud::Ptr filtered = cropped;
-    if (enable_voxel_grid_ && !cropped->empty()) {
+    Cloud::Ptr filtered = remove_small_clusters(cropped);
+    if (enable_voxel_grid_ && !filtered->empty()) {
       Cloud::Ptr downsampled(new Cloud);
       pcl::VoxelGrid<Point> voxel;
-      voxel.setInputCloud(cropped);
+      voxel.setInputCloud(filtered);
       const float leaf = static_cast<float>(voxel_leaf_size_);
       voxel.setLeafSize(leaf, leaf, leaf);
       voxel.filter(*downsampled);
@@ -172,6 +203,119 @@ private:
     publish_cloud(filtered, transformed_msg.header, output_pub_);
     Cloud::Ptr result = remove_table_plane(filtered, transformed_msg.header);
     publish_cloud(result, transformed_msg.header, table_removed_pub_);
+  }
+
+  Cloud::Ptr remove_small_clusters(const Cloud::Ptr & cloud)
+  {
+    if (!enable_cluster_filter_ || cloud->empty()) {
+      return cloud;
+    }
+
+    // Cluster a reduced cloud to avoid dense radius searches on every camera pixel.
+    // Original points are retained in the output; this does not downsample it.
+    Cloud::Ptr representatives(new Cloud);
+    pcl::VoxelGrid<Point> voxel;
+    voxel.setInputCloud(cloud);
+    const float leaf = static_cast<float>(cluster_tolerance_ / 5.0);
+    voxel.setLeafSize(leaf, leaf, leaf);
+    voxel.filter(*representatives);
+
+    pcl::search::KdTree<Point>::Ptr tree(new pcl::search::KdTree<Point>);
+    tree->setInputCloud(representatives);
+    pcl::EuclideanClusterExtraction<Point> extraction;
+    extraction.setClusterTolerance(cluster_tolerance_);
+    extraction.setMinClusterSize(1);
+    extraction.setMaxClusterSize(static_cast<int>(representatives->size()));
+    extraction.setSearchMethod(tree);
+    extraction.setInputCloud(representatives);
+    std::vector<pcl::PointIndices> clusters;
+    extraction.extract(clusters);
+
+    std::vector<int> labels(representatives->size(), -1);
+    for (std::size_t i = 0; i < clusters.size(); ++i) {
+      for (const int index : clusters[i].indices) {
+        labels[index] = static_cast<int>(i);
+      }
+    }
+    std::vector<int> original_labels(cloud->size(), -1);
+    std::vector<std::size_t> counts(clusters.size(), 0);
+    std::vector<Eigen::Vector3f> minima(clusters.size(), Eigen::Vector3f::Constant(INFINITY));
+    std::vector<Eigen::Vector3f> maxima(clusters.size(), Eigen::Vector3f::Constant(-INFINITY));
+    std::vector<int> nearest(1);
+    std::vector<float> distances(1);
+    for (std::size_t i = 0; i < cloud->size(); ++i) {
+      if (tree->nearestKSearch((*cloud)[i], 1, nearest, distances) > 0) {
+        const int label = labels[nearest[0]];
+        original_labels[i] = label;
+        if (label >= 0) {
+          ++counts[label];
+          minima[label] = minima[label].cwiseMin((*cloud)[i].getVector3fMap());
+          maxima[label] = maxima[label].cwiseMax((*cloud)[i].getVector3fMap());
+        }
+      }
+    }
+
+    if (clusters.empty()) {
+      return cloud;
+    }
+    // Raw pixel count alone cannot identify dense floating speckles. Build a
+    // reference from extended surfaces and the widest component, then reject
+    // compact components separated from that reference regardless of point count.
+    std::vector<float> extents(clusters.size(), 0.0F);
+    for (std::size_t i = 0; i < clusters.size(); ++i) {
+      if (counts[i] > 0) {
+        extents[i] = (maxima[i] - minima[i]).norm();
+      }
+    }
+    const auto largest = static_cast<std::size_t>(
+      std::distance(extents.begin(), std::max_element(extents.begin(), extents.end())));
+    std::vector<bool> keep(clusters.size(), false);
+    std::vector<bool> compact(clusters.size(), false);
+    Cloud::Ptr support(new Cloud);
+    for (std::size_t i = 0; i < clusters.size(); ++i) {
+      keep[i] = counts[i] >= static_cast<std::size_t>(cluster_min_points_);
+      compact[i] = extents[i] <= cluster_max_isolated_extent_;
+      if (keep[i] && (!compact[i] || i == largest)) {
+        for (const int index : clusters[i].indices) {
+          support->push_back((*representatives)[index]);
+        }
+      }
+    }
+    if (!support->empty()) {
+      pcl::search::KdTree<Point> support_tree;
+      support_tree.setInputCloud(support);
+      const double isolation_squared = cluster_isolation_distance_ * cluster_isolation_distance_;
+      for (std::size_t i = 0; i < clusters.size(); ++i) {
+        if (!keep[i] || !compact[i] || i == largest) {
+          continue;
+        }
+        bool near_support = false;
+        for (const int index : clusters[i].indices) {
+          if (support_tree.nearestKSearch((*representatives)[index], 1, nearest, distances) > 0 &&
+              distances[0] <= isolation_squared) {
+            near_support = true;
+            break;
+          }
+        }
+        keep[i] = near_support;
+      }
+    }
+
+    Cloud::Ptr result(new Cloud);
+    result->header = cloud->header;
+    result->sensor_origin_ = cloud->sensor_origin_;
+    result->sensor_orientation_ = cloud->sensor_orientation_;
+    result->reserve(cloud->size());
+    for (std::size_t i = 0; i < cloud->size(); ++i) {
+      const int label = original_labels[i];
+      if (label < 0 || keep[label]) {
+        result->push_back((*cloud)[i]);
+      }
+    }
+    result->is_dense = cloud->is_dense;
+    RCLCPP_DEBUG(get_logger(), "Cluster filter removed %zu of %zu points",
+      cloud->size() - result->size(), cloud->size());
+    return result;
   }
 
   Cloud::Ptr remove_table_plane(
@@ -251,6 +395,7 @@ private:
   std::string input_topic_;
   std::string output_topic_;
   std::string table_removed_topic_;
+  std::string octomap_topic_;
   std::string target_frame_;
   std::string roi_topic_;
   std::string table_topic_;
@@ -263,6 +408,11 @@ private:
   double crop_max_z_;
   bool enable_voxel_grid_;
   double voxel_leaf_size_;
+  bool enable_cluster_filter_;
+  double cluster_tolerance_;
+  int cluster_min_points_;
+  double cluster_isolation_distance_;
+  double cluster_max_isolated_extent_;
   bool remove_table_;
   double plane_distance_threshold_;
   double plane_max_angle_deg_;
@@ -277,6 +427,7 @@ private:
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr input_sub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr output_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr table_removed_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr octomap_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr roi_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr table_pub_;
 };

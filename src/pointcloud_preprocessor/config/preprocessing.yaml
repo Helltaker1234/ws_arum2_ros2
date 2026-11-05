@@ -3,19 +3,33 @@ pointcloud_preprocessor:
     input_topic: /camera/depth/points
     output_topic: /camera/depth/points_cleaned_no_table_removed
     table_removed_topic: /camera/depth/points_cleaned_yes_table_removed
+    # 입력 좌표계/시간 유지. ROI, 다운샘플링, 테이블 제거 없이 작은 점군만 제거.
+    octomap_topic: /camera/depth/points_cleaned_outlier_removed
     target_frame: base_link
     transform_timeout_sec: 0.1
 
     # base_link 기준 작업 영역 [m]
     crop_min_x: 0.05
     crop_max_x: 0.50
-    crop_min_y: -0.20
-    crop_max_y: 0.20
+    crop_min_y: -0.24
+    crop_max_y: 0.27
     crop_min_z: 0.02
     crop_max_z: 0.70
 
     enable_voxel_grid: false  # false > 원본 Pointcloud 해상도 유지
     voxel_leaf_size: 0.005
+
+    # 분리된 작은 점군 제거. 세 출력 토픽에 공통 적용.
+    # 기존 두 출력은 ROI 내부에서, octomap_topic은 전체 입력에서 판정.
+    # 연결 판정은 tolerance/5 크기의 voxel 대표점으로 근사하며,
+    # 최소 크기는 다운샘플링 전 원본 점 개수로 판정한다.
+    enable_cluster_filter: true
+    cluster_tolerance: 0.02  # 연결 거리 [m]
+    cluster_min_points: 300  # 이보다 작은 분리 점군 제거
+    # 점 개수가 많아도, 작은 부유 점군은 주변의 큰 표면과 떨어져 있으면 제거.
+    # 크기는 원본 점군 bounding box 대각선 길이. 공간 크기가 가장 큰 점군은 기준으로 유지.
+    cluster_isolation_distance: 0.05  # 큰 표면과의 최소 간격 [m], voxel 대표점 기준
+    cluster_max_isolated_extent: 0.08  # 제거할 부유 점군의 최대 크기 [m]
 
     # 테이블 제거는 table_removed_topic 출력에만 적용한다.
     remove_table: true

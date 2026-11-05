@@ -10,7 +10,7 @@ Panels:
         - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
-    Tree Height: 318
+    Tree Height: 477
   - Class: rviz_common/Help
     Name: Help
   - Class: rviz_common/Views
@@ -354,7 +354,13 @@ Visualization Manager:
         All Enabled: false
         base_link:
           Value: false
+        camera_color_frame:
+          Value: false
         camera_color_optical_frame:
+          Value: false
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
           Value: false
         camera_link:
           Value: false
@@ -365,45 +371,75 @@ Visualization Manager:
         grasp_candidate_0:
           Value: false
         grasp_candidate_1:
-          Value: true
-        grasp_candidate_10:
-          Value: true
-        grasp_candidate_11:
-          Value: true
-        grasp_candidate_12:
-          Value: true
-        grasp_candidate_13:
-          Value: true
-        grasp_candidate_14:
-          Value: true
-        grasp_candidate_2:
-          Value: true
-        grasp_candidate_3:
-          Value: true
-        grasp_candidate_4:
-          Value: true
-        grasp_candidate_5:
-          Value: true
-        grasp_candidate_6:
-          Value: true
-        grasp_candidate_7:
-          Value: true
-        grasp_candidate_8:
-          Value: true
-        grasp_candidate_9:
-          Value: true
-        gripper_hand_link_L_1:
           Value: false
+        grasp_candidate_10:
+          Value: false
+        grasp_candidate_11:
+          Value: false
+        grasp_candidate_12:
+          Value: false
+        grasp_candidate_13:
+          Value: false
+        grasp_candidate_14:
+          Value: false
+        grasp_candidate_15:
+          Value: false
+        grasp_candidate_16:
+          Value: false
+        grasp_candidate_17:
+          Value: false
+        grasp_candidate_18:
+          Value: false
+        grasp_candidate_19:
+          Value: false
+        grasp_candidate_2:
+          Value: false
+        grasp_candidate_20:
+          Value: false
+        grasp_candidate_21:
+          Value: false
+        grasp_candidate_22:
+          Value: false
+        grasp_candidate_23:
+          Value: false
+        grasp_candidate_24:
+          Value: false
+        grasp_candidate_25:
+          Value: false
+        grasp_candidate_26:
+          Value: false
+        grasp_candidate_27:
+          Value: false
+        grasp_candidate_28:
+          Value: false
+        grasp_candidate_29:
+          Value: false
+        grasp_candidate_3:
+          Value: false
+        grasp_candidate_4:
+          Value: false
+        grasp_candidate_5:
+          Value: false
+        grasp_candidate_6:
+          Value: false
+        grasp_candidate_7:
+          Value: false
+        grasp_candidate_8:
+          Value: false
+        grasp_candidate_9:
+          Value: false
+        gripper_hand_link_L_1:
+          Value: true
         gripper_hand_link_R_1:
           Value: false
         gripper_left_finger_link_L_1:
-          Value: false
+          Value: true
         gripper_left_finger_link_R_1:
           Value: false
         gripper_rigft_finger_link_R_1:
           Value: false
         gripper_right_finger_link_L_1:
-          Value: false
+          Value: true
         shoulder_pitch_link_L_1:
           Value: false
         shoulder_pitch_link_R_1:
@@ -419,7 +455,7 @@ Visualization Manager:
         world:
           Value: false
         wrist_pitch_link_L_1:
-          Value: true
+          Value: false
         wrist_pitch_link_R_1:
           Value: false
         wrist_roll_link_L_1:
@@ -439,8 +475,13 @@ Visualization Manager:
         world:
           base_link:
             camera_link:
+              camera_color_frame:
+                {}
               camera_color_optical_frame:
                 {}
+              camera_depth_frame:
+                camera_depth_optical_frame:
+                  {}
             shoulder_pitch_link_L_1:
               shoulder_roll_link_L_1:
                 shoulder_yaw_link_L_1:
@@ -479,7 +520,37 @@ Visualization Manager:
             {}
           grasp_candidate_14:
             {}
+          grasp_candidate_15:
+            {}
+          grasp_candidate_16:
+            {}
+          grasp_candidate_17:
+            {}
+          grasp_candidate_18:
+            {}
+          grasp_candidate_19:
+            {}
           grasp_candidate_2:
+            {}
+          grasp_candidate_20:
+            {}
+          grasp_candidate_21:
+            {}
+          grasp_candidate_22:
+            {}
+          grasp_candidate_23:
+            {}
+          grasp_candidate_24:
+            {}
+          grasp_candidate_25:
+            {}
+          grasp_candidate_26:
+            {}
+          grasp_candidate_27:
+            {}
+          grasp_candidate_28:
+            {}
+          grasp_candidate_29:
             {}
           grasp_candidate_3:
             {}
@@ -515,41 +586,41 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.3557580709457397
+      Distance: 1.3376692533493042
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.004886545240879059
-        Y: 0.013579722493886948
-        Z: 0.4433612823486328
+        X: -0.006439157761633396
+        Y: 0.14988406002521515
+        Z: 0.45350730419158936
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.11999999731779099
+      Pitch: 0.3599992096424103
       Target Frame: base_link
       Value: Orbit (rviz_default_plugins)
-      Yaw: 0.0019998550415039062
+      Yaw: 0.8820006847381592
     Saved: ~
 Window Geometry:
   Displays:
-    collapsed: true
-  Height: 1013
+    collapsed: false
+  Height: 1136
   Help:
     collapsed: false
-  Hide Left Dock: true
+  Hide Left Dock: false
   Hide Right Dock: false
   MotionPlanning:
-    collapsed: true
+    collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002b40000039bfc0200000005fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004100fffffffb000000100044006900730070006c006100790073000000003d000001c1000000c900fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670000000204000001d40000017d00fffffffb0000000800480065006c0070000000029a0000006e0000006e00fffffffb0000000a005600690065007700730000000334000000a4000000a400ffffff000003480000039b00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000002b400000416fc0200000005fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004100fffffffb000000100044006900730070006c006100790073010000003d00000260000000c900fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000002a3000001b00000017d00fffffffb0000000800480065006c0070000000029a0000006e0000006e00fffffffb0000000a005600690065007700730000000334000000a4000000a400ffffff000004800000041600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
-  Width: 840
-  X: 2760
-  Y: 150
+  Width: 1850
+  X: 70
+  Y: 27

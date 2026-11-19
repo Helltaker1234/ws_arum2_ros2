@@ -309,7 +309,7 @@ bool MTCTaskNode::prepareTargetObject()
     tf2_ros::TransformListener tf_listener(tf_buffer);
     sensor_msgs::msg::PointCloud2 raw_cloud, cloud;
     
-    if (!rclcpp::wait_for_message(raw_cloud, cloud_node, raw_topic, std::chrono::seconds(5), rclcpp::SensorDataQoS()) ||
+    if (!rclcpp::wait_for_message(raw_cloud, cloud_node, raw_topic, std::chrono::seconds(9999), rclcpp::SensorDataQoS()) ||
         !rclcpp::wait_for_message(cloud, cloud_node, "/camera/depth/points_cleaned_yes_table_removed", std::chrono::seconds(9999), rclcpp::SensorDataQoS()))
       throw std::runtime_error("Timed out waiting for target point clouds");
     

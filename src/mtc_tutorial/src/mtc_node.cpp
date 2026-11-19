@@ -310,7 +310,7 @@ bool MTCTaskNode::prepareTargetObject()
     sensor_msgs::msg::PointCloud2 raw_cloud, cloud;
     
     if (!rclcpp::wait_for_message(raw_cloud, cloud_node, raw_topic, std::chrono::seconds(5), rclcpp::SensorDataQoS()) ||
-        !rclcpp::wait_for_message(cloud, cloud_node, "/camera/depth/points_cleaned_yes_table_removed", std::chrono::seconds(5), rclcpp::SensorDataQoS()))
+        !rclcpp::wait_for_message(cloud, cloud_node, "/camera/depth/points_cleaned_yes_table_removed", std::chrono::seconds(9999), rclcpp::SensorDataQoS()))
       throw std::runtime_error("Timed out waiting for target point clouds");
     
     if (raw_cloud.header.frame_id.empty() || cloud.header.frame_id.empty())
@@ -551,7 +551,7 @@ mtc::Task MTCTaskNode::createTask()
       stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
       stage->properties().set("marker_ns", "approach_object");
       stage->setIKFrame(hand_frame);
-      stage->setMinMaxDistance(0.01, 0.15);
+      stage->setMinMaxDistance(0.005, 0.08);
       geometry_msgs::msg::Vector3Stamped direction;
       direction.header.frame_id = hand_frame;
       direction.vector.z = -1.0; // gripper_hand_link_L_1 의 -z 방향이 EE 의 approch 방향임
@@ -578,8 +578,7 @@ mtc::Task MTCTaskNode::createTask()
 
       // [Real]
       grasp_frame_transform.linear() =
-      (Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()) *
-       Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitX())).toRotationMatrix();
+      Eigen::AngleAxisd(pi / 2.0, Eigen::Vector3d::UnitY()).toRotationMatrix();
       // gpd_config.yaml 
       // direction = +1 0 0 로 할 경우 grasp frame 을 다음과 같이 정의 해야함.
 
@@ -599,8 +598,8 @@ mtc::Task MTCTaskNode::createTask()
 
 
       auto stage = std::make_unique<mtc::stages::ComputeIK>("compute grasp IK", std::move(generator));
-      stage->setMaxIKSolutions(8);
-      stage->setMinSolutionDistance(1.0);
+      stage->setMaxIKSolutions(4);
+      stage->setMinSolutionDistance(5.0);
       stage->setIKFrame(grasp_frame_transform, hand_frame);
       stage->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
       stage->properties().configureInitFrom(mtc::Stage::INTERFACE, { "target_pose" });
@@ -635,7 +634,7 @@ mtc::Task MTCTaskNode::createTask()
       stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
       stage->properties().set("marker_ns", "lift_object");
       stage->setIKFrame(hand_frame);
-      stage->setMinMaxDistance(0.05, 0.25);
+      stage->setMinMaxDistance(0.0, 0.25);
       geometry_msgs::msg::Vector3Stamped direction;
       direction.header.frame_id = world_frame;
       direction.vector.z = 1.0;

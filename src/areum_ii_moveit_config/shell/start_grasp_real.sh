@@ -33,8 +33,8 @@ sleep 20
 setsid "$ROS2_BIN" launch realsense2_camera rs_launch.py \
     enable_color:=true \
     enable_depth:=true \
-    rgb_camera.color_profile:=1280x720x15 \
-    depth_module.depth_profile:=1280x720x15 \
+    rgb_camera.color_profile:=1280x720x30 \
+    depth_module.depth_profile:=1280x720x30 \
     align_depth.enable:=true \
     enable_sync:=true \
     pointcloud.enable:=false \

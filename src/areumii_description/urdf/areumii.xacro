@@ -2,6 +2,7 @@
 <robot name="areumii" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 <xacro:include filename="$(find areumii_description)/urdf/materials.xacro" />
+<xacro:property name="limit_margin" value="0.01" />
 <link name="base_link">
   <inertial>
     <origin xyz="-0.04548196588833091 0.00896011912781043 0.11132862648581474" rpy="0 0 0"/>
@@ -448,7 +449,7 @@
   <parent link="shoulder_pitch_link_L_1"/>
   <child link="shoulder_roll_link_L_1"/>
   <axis xyz="1.0 -0.0 0.0"/>
-  <limit upper="1.570796" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="${1.570796 + limit_margin}" lower="${0.0 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="shouler_yaw_joint_L" type="revolute">
@@ -456,7 +457,7 @@
   <parent link="shoulder_roll_link_L_1"/>
   <child link="shoulder_yaw_link_L_1"/>
   <axis xyz="0.0 0.0 -1.0"/>
-  <limit upper="1.396263" lower="-1.396263" effort="100" velocity="100"/>
+  <limit upper="${1.396263 + limit_margin}" lower="${-1.396263 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="elbow_joint_L" type="revolute">
@@ -464,7 +465,7 @@
   <parent link="shoulder_yaw_link_L_1"/>
   <child link="elbow_link_L_1"/>
   <axis xyz="0.0 -1.0 -0.0"/>
-  <limit upper="2.094395" lower="-0.872665" effort="100" velocity="100"/>
+  <limit upper="${2.094395 + limit_margin}" lower="${-0.872665 - limit_margin}" effort="100" velocity="100"/>
 
 </joint>
 
@@ -473,7 +474,7 @@
   <parent link="elbow_link_L_1"/>
   <child link="wrist_roll_link_L_1"/>
   <axis xyz="0.0 0.0 -1.0"/>
-  <limit upper="1.745329" lower="-1.745329" effort="100" velocity="100"/>
+  <limit upper="${1.745329 + limit_margin}" lower="${-1.745329 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_yaw_joint_L" type="revolute">
@@ -481,7 +482,7 @@
   <parent link="wrist_roll_link_L_1"/>
   <child link="wrist_yaw_link_L_1"/>
   <axis xyz="-1.0 -0.0 0.0"/>
-  <limit upper="0.523599" lower="-0.523599" effort="100" velocity="100"/>
+  <limit upper="${0.523599 + limit_margin}" lower="${-0.523599 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_pitch_joint_L" type="revolute">
@@ -489,7 +490,7 @@
   <parent link="wrist_yaw_link_L_1"/>
   <child link="wrist_pitch_link_L_1"/>
   <axis xyz="0.0 -1.0 -0.0"/>
-  <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+  <limit upper="${1.570796 + limit_margin}" lower="${-1.570796 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="shoulder_yaw_joint_R" type="revolute">
@@ -497,7 +498,7 @@
   <parent link="shoulder_roll_link_R_1"/>
   <child link="shoulder_yaw_link_R_1"/>
   <axis xyz="0.0 0.0 1.0"/>
-  <limit upper="1.396263" lower="-1.396263" effort="100" velocity="100"/>
+  <limit upper="${1.396263 + limit_margin}" lower="${-1.396263 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="elbow_joint_R" type="revolute">
@@ -505,7 +506,7 @@
   <parent link="shoulder_yaw_link_R_1"/>
   <child link="elbow_link_R_1"/>
   <axis xyz="0.0 -1.0 -0.0"/>
-  <limit upper="2.094395" lower="-0.872665" effort="100" velocity="100"/>
+  <limit upper="${2.094395 + limit_margin}" lower="${-0.872665 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_roll_joint_R" type="revolute">
@@ -513,7 +514,7 @@
   <parent link="elbow_link_R_1"/>
   <child link="wrist_roll_link_R_1"/>
   <axis xyz="0.0 0.0 1.0"/>
-  <limit upper="1.745329" lower="-1.745329" effort="100" velocity="100"/>
+  <limit upper="${1.745329 + limit_margin}" lower="${-1.745329 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_yaw_joint_R" type="revolute">
@@ -521,7 +522,7 @@
   <parent link="wrist_roll_link_R_1"/>
   <child link="wrist_yaw_link_R_1"/>
   <axis xyz="1.0 -0.0 0.0"/>
-  <limit upper="0.523599" lower="-0.523599" effort="100" velocity="100"/>
+  <limit upper="${0.523599 + limit_margin}" lower="${-0.523599 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="wrist_pitch_joint_R" type="revolute">
@@ -529,7 +530,7 @@
   <parent link="wrist_yaw_link_R_1"/>
   <child link="wrist_pitch_link_R_1"/>
   <axis xyz="0.0 -1.0 -0.0"/>
-  <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+  <limit upper="${1.570796 + limit_margin}" lower="${-1.570796 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="shoulder_roll_joint_R" type="revolute">
@@ -537,7 +538,7 @@
   <parent link="shoulder_pitch_link_R_1"/>
   <child link="shoulder_roll_link_R_1"/>
   <axis xyz="-1.0 -0.0 0.0"/>
-  <limit upper="1.570796" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="${1.570796 + limit_margin}" lower="${0.0 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="shoulder_pitch_joint_R" type="revolute">
@@ -545,7 +546,7 @@
   <parent link="base_link"/>
   <child link="shoulder_pitch_link_R_1"/>
   <axis xyz="-0.0 1.0 -0.0"/>
-  <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+  <limit upper="${1.570796 + limit_margin}" lower="${-1.570796 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="shoulder_pitch_joint_L" type="revolute">
@@ -553,7 +554,7 @@
   <parent link="base_link"/>
   <child link="shoulder_pitch_link_L_1"/>
   <axis xyz="-0.0 1.0 -0.0"/>
-  <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+  <limit upper="${1.570796 + limit_margin}" lower="${-1.570796 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="gripper_left_finger_joint_L" type="prismatic">
@@ -561,7 +562,7 @@
   <parent link="gripper_hand_link_L_1"/>
   <child link="gripper_left_finger_link_L_1"/>
   <axis xyz="0.0 1.0 -0.0"/>
-  <limit upper="0.03" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="${9.99 + limit_margin}" lower="${-9.99 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="gripper_right_finger_joint_L" type="prismatic">
@@ -569,7 +570,7 @@
   <parent link="gripper_hand_link_L_1"/>
   <child link="gripper_right_finger_link_L_1"/>
   <axis xyz="0.0 1.0 -0.0"/>
-  <limit upper="0.0" lower="-0.03" effort="100" velocity="100"/>
+  <limit upper="${9.99 + limit_margin}" lower="${-9.99 - limit_margin}" effort="100" velocity="100"/>
 
   <mimic joint="gripper_left_finger_joint_L" multiplier="-1.0" offset="0.0"/>
 
@@ -586,7 +587,7 @@
   <parent link="gripper_hand_link_R_1"/>
   <child link="gripper_left_finger_link_R_1"/>
   <axis xyz="0.0 1.0 -0.0"/>
-  <limit upper="0.03" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="${9.99 + limit_margin}" lower="${-9.99 - limit_margin}" effort="100" velocity="100"/>
 </joint>
 
 <joint name="gripper_right_finger_joint_R" type="prismatic">
@@ -594,7 +595,7 @@
   <parent link="gripper_hand_link_R_1"/>
   <child link="gripper_rigft_finger_link_R_1"/>
   <axis xyz="0.0 1.0 -0.0"/>
-  <limit upper="0.0" lower="-0.03" effort="100" velocity="100"/>
+  <limit upper="${9.99 + limit_margin}" lower="${-9.99 - limit_margin}" effort="100" velocity="100"/>
 
   <mimic joint="gripper_left_finger_joint_R" multiplier="-1.0" offset="0.0"/>
 

@@ -41,10 +41,10 @@
 
 
 
-#define open_gripper_L_PRISM 0.03
+#define open_gripper_L_PRISM 0.04
 #define close_gripper_L_PRISM 0.001
 
-#define open_gripper_R_PRISM 0.03
+#define open_gripper_R_PRISM 0.04
 #define close_gripper_R_PRISM 0.001
 
 #define VOXEL_SCALE_FACTOR 1.8
@@ -139,6 +139,7 @@ private:
 
   // Compose an MTC task from a series of stages.
   mtc::Task createTask();
+  mtc::Task createHomeTask();
   mtc::Task task_;
   rclcpp::Node::SharedPtr node_;
   std::vector<geometry_msgs::msg::PoseStamped> grasp_candidates_;
@@ -450,6 +451,53 @@ void MTCTaskNode::doTask()
     return;
   }
 
+  auto clear_octomap = node_->create_client<std_srvs::srv::Empty>("/clear_octomap");
+  if (!clear_octomap->wait_for_service(std::chrono::seconds(5)))
+  {
+    RCLCPP_ERROR(LOGGER, "Service '/clear_octomap' is not available after release");
+    return;
+  }
+
+  auto clear_future = clear_octomap->async_send_request(std::make_shared<std_srvs::srv::Empty::Request>());
+  if (clear_future.wait_for(std::chrono::seconds(5)) != std::future_status::ready)
+  {
+    RCLCPP_ERROR(LOGGER, "Timed out while clearing the OctoMap after release");
+    return;
+  }
+
+  const double rebuild_wait = node_->get_parameter("octomap_rebuild_wait_seconds").as_double();
+  if (rebuild_wait > 0.0)
+    rclcpp::sleep_for(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::duration<double>(rebuild_wait)));
+
+  RCLCPP_INFO(LOGGER, "Released target and cleared OctoMap; waited %.2f s", rebuild_wait);
+
+  try
+  {
+    mtc::Task home_task = createHomeTask();
+    home_task.init();
+
+    if (!home_task.plan(5))
+    {
+      RCLCPP_ERROR_STREAM(LOGGER, "Home task planning failed");
+      return;
+    }
+
+    home_task.introspection().publishSolution(*home_task.solutions().front());
+    const auto home_result = home_task.execute(*home_task.solutions().front());
+    if (home_result.val != moveit_msgs::msg::MoveItErrorCodes::SUCCESS)
+      RCLCPP_ERROR_STREAM(LOGGER, "Home task execution failed");
+  }
+  catch (mtc::InitStageException& e)
+  {
+    RCLCPP_ERROR_STREAM(LOGGER, e);
+  }
+  catch (const std::exception& e)
+  {
+    RCLCPP_ERROR(LOGGER, "Failed to create or execute home task: %s", e.what());
+  }
+
   return;
 }
 
@@ -501,13 +549,21 @@ mtc::Task MTCTaskNode::createTask()
 
   const std::map<std::string, double> left_home_pose = {
     { "shoulder_pitch_joint_L", 77.0 * pi / 180.0 },
+    { "shoulder_roll_joint_L", 0.0},
+    { "shouler_yaw_joint_L", 0.0},
     { "elbow_joint_L", 112.0 * pi / 180.0 },
+    { "wrist_roll_joint_L", 0.0},
+    { "wrist_yaw_joint_L", 0.0},
     { "wrist_pitch_joint_L", 38.0 * pi / 180.0 },
   };
 
   const std::map<std::string, double> right_home_pose = {
     { "shoulder_pitch_joint_R", 77.0 * pi / 180.0 },
+    { "shoulder_roll_joint_R", 0.0},
+    { "shoulder_yaw_joint_R", 0.0},
     { "elbow_joint_R", 112.0 * pi / 180.0 },
+    { "wrist_roll_joint_R", 0.0},
+    { "wrist_yaw_joint_R", 0.0},
     { "wrist_pitch_joint_R", 38.0 * pi / 180.0 },
   };
 
@@ -645,44 +701,80 @@ mtc::Task MTCTaskNode::createTask()
     task.add(std::move(pick));
   }
 
-  // {
-  //   auto stage = std::make_unique<mtc::stages::MoveTo>("open left hand after lift", interpolation_planner);
-  //   stage->setGroup(hand_group_name);
-  //   stage->setGoal(open_gripper);
-  //   task.add(std::move(stage));
-  // }
+  // Release the grasp after lifting.
+  {
+    auto stage = std::make_unique<mtc::stages::MoveTo>("open left hand after lift", interpolation_planner);
+    stage->setGroup(hand_group_name);
+    stage->setGoal(open_gripper);
+    task.add(std::move(stage));
+  }
 
-  // {
-  //   const std::map<std::string, double> left_final_pose = {
-  //     { "shoulder_pitch_joint_L", -0.1 },
-  //     { "shoulder_roll_joint_L", 0.0 },
-  //     { "shouler_yaw_joint_L", 0.0 },
-  //     { "elbow_joint_L", 0.8 },
-  //     { "wrist_roll_joint_L", 0.0 },
-  //     { "wrist_yaw_joint_L", 0.0 },
-  //     { "wrist_pitch_joint_L", 0.8 },
-  //   };
-  //   auto stage = std::make_unique<mtc::stages::MoveTo>("move left arm to final pose", sampling_planner);
-  //   stage->setGroup(arm_group_name);
-  //   stage->setGoal(left_final_pose);
-  //   task.add(std::move(stage));
-  // }
+  // Detach the target first, then remove the voxel collision object from the planning scene.
+  {
+    auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>("detach target after lift");
+    stage->detachObject(target_object_id, hand_frame);
+    task.add(std::move(stage));
+  }
 
-  // {
-  //   const std::map<std::string, double> right_final_pose = {
-  //     { "shoulder_pitch_joint_R", -0.1 },
-  //     { "shoulder_roll_joint_R", 0.0 },
-  //     { "shoulder_yaw_joint_R", 0.0 },
-  //     { "elbow_joint_R", 0.8 },
-  //     { "wrist_roll_joint_R", 0.0 },
-  //     { "wrist_yaw_joint_R", 0.0 },
-  //     { "wrist_pitch_joint_R", 0.8 },
-  //   };
-  //   auto stage = std::make_unique<mtc::stages::MoveTo>("move right arm to final pose", sampling_planner);
-  //   stage->setGroup("areumii_arm_r");
-  //   stage->setGoal(right_final_pose);
-  //   task.add(std::move(stage));
-  // }
+  {
+    auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>("remove target collision voxels");
+    stage->removeObject(target_object_id);
+    task.add(std::move(stage));
+  }
+
+  return task;
+}
+
+mtc::Task MTCTaskNode::createHomeTask()
+{
+  mtc::Task task;
+  task.stages()->setName("Areum II return to home task");
+  task.loadRobotModel(node_);
+
+  constexpr double pi = 3.14159265358979323846;
+  auto interpolation_planner = std::make_shared<mtc::solvers::JointInterpolationPlanner>();
+
+  const std::map<std::string, double> left_home_pose = {
+    { "shoulder_pitch_joint_L", 77.0 * pi / 180.0 },
+    { "shoulder_roll_joint_L", 0.0},
+    { "shouler_yaw_joint_L", 0.0},
+    { "elbow_joint_L", 112.0 * pi / 180.0 },
+    { "wrist_roll_joint_L", 0.0},
+    { "wrist_yaw_joint_L", 0.0},
+    { "wrist_pitch_joint_L", 38.0 * pi / 180.0 },
+  };
+
+  const std::map<std::string, double> right_home_pose = {
+    { "shoulder_pitch_joint_R", 77.0 * pi / 180.0 },
+    { "shoulder_roll_joint_R", 0.0},
+    { "shoulder_yaw_joint_R", 0.0},
+    { "elbow_joint_R", 112.0 * pi / 180.0 },
+    { "wrist_roll_joint_R", 0.0},
+    { "wrist_yaw_joint_R", 0.0},
+    { "wrist_pitch_joint_R", 38.0 * pi / 180.0 },
+  };
+
+  task.add(std::make_unique<mtc::stages::CurrentState>("current state for home task"));
+
+  {
+    auto stage = std::make_unique<mtc::stages::ModifyPlanningScene>("ignore octomap for home task");
+    stage->allowCollisions("<octomap>", true);
+    task.add(std::move(stage));
+  }
+
+  {
+    auto stage = std::make_unique<mtc::stages::MoveTo>("move left arm to final home", interpolation_planner);
+    stage->setGroup("areumii_arm_l");
+    stage->setGoal(left_home_pose);
+    task.add(std::move(stage));
+  }
+
+  {
+    auto stage = std::make_unique<mtc::stages::MoveTo>("move right arm to final home", interpolation_planner);
+    stage->setGroup("areumii_arm_r");
+    stage->setGoal(right_home_pose);
+    task.add(std::move(stage));
+  }
 
   return task;
 }
